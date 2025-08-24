@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   textures.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/24 18:22:01 by hsharaf-          #+#    #+#             */
+/*   Updated: 2025/08/24 18:22:01 by hsharaf-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "cub3d.h"
 #include "mlx.h"
 
@@ -19,17 +30,17 @@ static int load_one(void *mlx, const char *path, t_img *out)
 
 int textures_load(t_game *g, const t_config *cfg)
 {
-	if (load_one(g->mlx, cfg->textures.NO, &g->tex[TEX_NO]) != 0)
+if (load_one(g->mlx, cfg->textures.no, &g->tex[TEX_NO]) != 0)
 		return (1);
-	if (load_one(g->mlx, cfg->textures.SO, &g->tex[TEX_SO]) != 0)
+	if (load_one(g->mlx, cfg->textures.so, &g->tex[TEX_SO]) != 0)
 		return (mlx_destroy_image(g->mlx, g->tex[TEX_NO].img), g->tex[TEX_NO]=(t_img){0}, 1);
-	if (load_one(g->mlx, cfg->textures.EA, &g->tex[TEX_EA]) != 0)
+	if (load_one(g->mlx, cfg->textures.ea, &g->tex[TEX_EA]) != 0)
 	{
 		mlx_destroy_image(g->mlx, g->tex[TEX_NO].img); g->tex[TEX_NO]=(t_img){0};
 		mlx_destroy_image(g->mlx, g->tex[TEX_SO].img); g->tex[TEX_SO]=(t_img){0};
 		return (1);
 	}
-	if (load_one(g->mlx, cfg->textures.WE, &g->tex[TEX_WE]) != 0)
+	if (load_one(g->mlx, cfg->textures.we, &g->tex[TEX_WE]) != 0)
 	{
 		mlx_destroy_image(g->mlx, g->tex[TEX_NO].img); g->tex[TEX_NO]=(t_img){0};
 		mlx_destroy_image(g->mlx, g->tex[TEX_SO].img); g->tex[TEX_SO]=(t_img){0};
