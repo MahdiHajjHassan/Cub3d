@@ -10,8 +10,11 @@ MLX := $(MLX_DIR)/libmlx.a
 
 SRCS := \
 	$(SRC_DIR)/main.c \
-	$(SRC_DIR)/render/run_game.c \
 	$(SRC_DIR)/parser/parse.c \
+	$(SRC_DIR)/render/run_game.c \
+	$(SRC_DIR)/render/engine.c \
+	$(SRC_DIR)/render/input.c \
+	$(SRC_DIR)/render/textures.c \
 	$(SRC_DIR)/utils/file_utils.c \
 	$(SRC_DIR)/utils/str_utils.c \
 	$(SRC_DIR)/utils/error.c
