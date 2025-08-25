@@ -10,16 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
-
-int		apply_directive(char *line, t_config *cfg, int *header_done);
-int		is_map_line(const char *line);
-int		count_map_lines(char **lines, size_t start, size_t total, size_t *out);
-size_t	max_line_width(char **lines, size_t start, size_t total);
-int		build_grid(t_map *map, char **lines, size_t start);
-int		detect_spawn(t_map *map);
-int		validate_closed(const t_map *map);
-int		find_map_start_and_apply(char **lines, size_t count,
-								t_config *cfg, size_t *idx);
+#include "parser.h"
 
 static void	init_config(t_config *cfg)
 {

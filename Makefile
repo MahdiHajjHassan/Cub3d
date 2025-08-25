@@ -5,6 +5,9 @@ INC_DIR := include
 LIBFT_DIR := $(INC_DIR)/libft
 MLX_DIR := minilibx-linux
 
+# Optional debugging (make DEBUG=1)
+DEBUG ?= 0
+
 LIBFT := $(LIBFT_DIR)/libft.a
 MLX := $(MLX_DIR)/libmlx.a
 
@@ -12,6 +15,7 @@ SRCS := \
 	$(SRC_DIR)/main.c \
 	$(SRC_DIR)/parser/parse.c \
 	$(SRC_DIR)/parser/parse_utils.c \
+	$(SRC_DIR)/parser/parse_header.c \
 	$(SRC_DIR)/render/run_game.c \
 	$(SRC_DIR)/render/engine.c \
 	$(SRC_DIR)/render/input.c \
@@ -26,6 +30,10 @@ SRCS_BONUS := \
 	$(SRC_DIR)/render/run_game_bonus.c \
 	$(SRC_DIR)/render/engine_bonus.c \
 	$(SRC_DIR)/render/input_bonus.c \
+	$(SRC_DIR)/render/movement_bonus.c \
+	$(SRC_DIR)/render/input_mouse_bonus.c \
+	$(SRC_DIR)/render/input_doors_bonus.c \
+	$(SRC_DIR)/render/collision_bonus.c \
 	$(SRC_DIR)/render/textures_bonus.c \
 	$(SRC_DIR)/render/sprites_bonus.c \
 	$(SRC_DIR)/render/minimap_bonus.c \
@@ -39,6 +47,10 @@ OBJS_BONUS := $(SRCS_BONUS:.c=.o)
 CC := cc
 CFLAGS := -Wall -Wextra -Werror -I$(INC_DIR) -I$(LIBFT_DIR) -I$(MLX_DIR)
 LDLIBS := $(LIBFT) $(MLX) -lXext -lX11 -lm
+
+ifeq ($(DEBUG),1)
+CFLAGS += -g3 -O0
+endif
 
 .PHONY: all clean fclean re libft mlx bonus
 

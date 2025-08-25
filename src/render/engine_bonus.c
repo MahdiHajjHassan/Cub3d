@@ -104,6 +104,8 @@ void render_frame_bonus(t_game *g)
 {
 	int x;
 
+	if (!g || g->closing)
+		return;
 	/* Draw ceiling and floor */
 	fill_rect(&g->frame, 0, 0, WIN_W, WIN_H/2, g->ceil_color);
 	fill_rect(&g->frame, 0, WIN_H/2, WIN_W, WIN_H, g->floor_color);
@@ -214,7 +216,8 @@ void render_frame_bonus(t_game *g)
 	render_sprites(g);
 
 	/* Put the frame first */
-	mlx_put_image_to_window(g->mlx, g->win, g->frame.img, 0, 0);
+	if (!g->closing && g->mlx && g->win)
+		mlx_put_image_to_window(g->mlx, g->win, g->frame.img, 0, 0);
 
 	/* Render minimap on top (drawn after frame) */
 	render_minimap(g);

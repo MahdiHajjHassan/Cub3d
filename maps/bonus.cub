@@ -1,10 +1,10 @@
-NO assets/wall_north.xpm
-SO assets/wall_south.xpm
-WE assets/wall_west.xpm
-EA assets/wall_east.xpm
-F 0,16,0
-C 0,0,0
-
+NO assets/cyber_wall_north.xpm
+SO assets/cyber_wall_south.xpm
+WE assets/cyber_wall_west.xpm
+EA assets/cyber_wall_east.xpm
+F 10,15,25
+C 5,5,15
+DO assets/cyber_door.xpm
 111111111111
 1N0000000001
 100011100001
@@ -12,4 +12,3 @@ C 0,0,0
 100010000001
 100000000001
 111111111111
-

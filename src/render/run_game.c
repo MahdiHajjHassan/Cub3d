@@ -1,5 +1,18 @@
 #include "cub3d.h"
 #include "mlx.h"
+#include <X11/Xlib.h>
+
+static int	display_available(void)
+{
+	/* Try an actual XOpenDisplay to verify connection works */
+	Display	*dpy;
+
+	dpy = XOpenDisplay(NULL);
+	if (!dpy)
+		return (0);
+	XCloseDisplay(dpy);
+	return (1);
+}
 
 /* X11 keycodes */
 #define KEY_ESC   65307
@@ -41,6 +54,9 @@ static void init_game_from_cfg(t_game *g, const t_config *cfg)
 int run_game(const t_config *cfg)
 {
 	t_game g;
+
+	if (!display_available())
+		return (error_msg("no DISPLAY; run under X11 or use xvfb-run"));
 
 	/* Zero-initialize */
 	g.mlx = NULL; g.win = NULL; g.frame = (t_img){0};

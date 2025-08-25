@@ -150,31 +150,34 @@ typedef struct s_minimap
 	int		size;
 	int		margin;
 	int		scale;
+	int		offset_x; /* origin inside the minimap image to center-fit the map */
+	int		offset_y;
 	t_img	img;
 }	t_minimap;
 
 typedef struct s_game
 {
-	void	*mlx;
-	void	*win;
-	t_img	frame;
-	t_img	tex[TEX_TOTAL];
-	int	ceil_color;
-	int	floor_color;
-	const t_map	*map;
-	double	pos_x;
-	double	pos_y;
-	double	dir_x;
-	double	dir_y;
-	double	plane_x;
-	double	plane_y;
-	t_keys	keys;
-	t_mouse	mouse;
-	double	move_speed;
-	double	rot_speed;
-	t_minimap	minimap;
+	void			*mlx;
+	void			*win;
+	t_img			frame;
+	t_img			tex[TEX_TOTAL];
+	int				ceil_color;
+	int				floor_color;
+	const t_map		*map;
+	double			pos_x;
+	double			pos_y;
+	double			dir_x;
+	double			dir_y;
+	double			plane_x;
+	double			plane_y;
+	t_keys			keys;
+	t_mouse			mouse;
+	double			move_speed;
+	double			rot_speed;
+	t_minimap		minimap;
 	struct timeval	last_time;
-	double	frame_time;
+	double			frame_time;
+	int				closing;
 }	t_game;
 
 int		run_game(const t_config *cfg);
@@ -196,6 +199,9 @@ int		init_minimap(t_game *g);
 void	destroy_minimap(t_game *g);
 void	handle_door_interaction(t_game *g);
 void	update_doors(t_game *g);
+int		on_mouse_move(int x, int y, void *param);
+bool	check_collision(t_game *g, double new_x, double new_y);
+void	apply_movement_bonus(t_game *g);
 void	render_frame_bonus(t_game *g);
 double	get_time_delta(struct timeval *last_time);
 

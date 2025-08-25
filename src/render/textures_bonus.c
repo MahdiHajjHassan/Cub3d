@@ -14,58 +14,35 @@
 
 static int load_wall_texture(t_game *g, const char *path, int index);
 static int load_sprite_textures(t_game *g);
+static int generate_cyber_texture(t_game *g, int index);
 
 int textures_load(t_game *g, const t_config *cfg)
 {
-	/* Load wall textures */
-if (load_wall_texture(g, cfg->textures.no, TEX_NO) != 0)
-		return (error_msg("textures: failed to load NO"));
-if (load_wall_texture(g, cfg->textures.so, TEX_SO) != 0)
-		return (error_msg("textures: failed to load SO"));
-if (load_wall_texture(g, cfg->textures.ea, TEX_EA) != 0)
-		return (error_msg("textures: failed to load EA"));
-if (load_wall_texture(g, cfg->textures.we, TEX_WE) != 0)
-		return (error_msg("textures: failed to load WE"));
+	/* Load wall textures (fallback to procedural cyber theme if load fails) */
+	if (load_wall_texture(g, cfg->textures.no, TEX_NO) != 0)
+		if (generate_cyber_texture(g, TEX_NO) != 0)
+			return (error_msg("textures: failed NO"));
+	if (load_wall_texture(g, cfg->textures.so, TEX_SO) != 0)
+		if (generate_cyber_texture(g, TEX_SO) != 0)
+			return (error_msg("textures: failed SO"));
+	if (load_wall_texture(g, cfg->textures.ea, TEX_EA) != 0)
+		if (generate_cyber_texture(g, TEX_EA) != 0)
+			return (error_msg("textures: failed EA"));
+	if (load_wall_texture(g, cfg->textures.we, TEX_WE) != 0)
+		if (generate_cyber_texture(g, TEX_WE) != 0)
+			return (error_msg("textures: failed WE"));
 	
-	/* Load door texture if available */
+	/* Door: try load else generate cyber door */
 	if (cfg->textures.door)
 	{
 		if (load_wall_texture(g, cfg->textures.door, TEX_DOOR) != 0)
-			return (error_msg("textures: failed to load door texture"));
+			if (generate_cyber_texture(g, TEX_DOOR) != 0)
+				return (error_msg("textures: failed door"));
 	}
 	else
 	{
-		/* Generate a simple brown door texture if not provided */
-		int w = 64, h = 64;
-		int x, y;
-		int bpp;
-		char *p;
-		g->tex[TEX_DOOR].img = mlx_new_image(g->mlx, w, h);
-		if (!g->tex[TEX_DOOR].img)
-			return (error_msg("textures: door image creation failed"));
-		g->tex[TEX_DOOR].data = mlx_get_data_addr(g->tex[TEX_DOOR].img, &g->tex[TEX_DOOR].bpp, &g->tex[TEX_DOOR].line_len, &g->tex[TEX_DOOR].endian);
-		if (!g->tex[TEX_DOOR].data)
-		{
-			mlx_destroy_image(g->mlx, g->tex[TEX_DOOR].img);
-			return (error_msg("textures: door data addr failed"));
-		}
-		g->tex[TEX_DOOR].width = w;
-		g->tex[TEX_DOOR].height = h;
-		bpp = g->tex[TEX_DOOR].bpp / 8;
-		for (y = 0; y < h; ++y)
-		{
-			for (x = 0; x < w; ++x)
-			{
-				int color = 0x8B4513; /* saddle brown */
-				/* add simple plank stripes */
-				if ((x / 8) % 2 == 0) color = 0xA0522D;
-				p = g->tex[TEX_DOOR].data + y * g->tex[TEX_DOOR].line_len + x * bpp;
-				p[0] = (char)(color & 0xFF);
-				p[1] = (char)((color >> 8) & 0xFF);
-				p[2] = (char)((color >> 16) & 0xFF);
-				p[3] = 0;
-			}
-		}
+		if (generate_cyber_texture(g, TEX_DOOR) != 0)
+			return (error_msg("textures: failed door gen"));
 	}
 	
 	/* Load sprite textures */
@@ -83,20 +60,77 @@ static int load_wall_texture(t_game *g, const char *path, int index)
 {
 	if (index >= TEX_COUNT)
 		return (error_msg("textures: invalid texture index"));
-	
-	g->tex[index].img = mlx_xpm_file_to_image(g->mlx, (char *)path, 
+	if (!path || !*path)
+		return (1);
+	g->tex[index].img = mlx_xpm_file_to_image(g->mlx, (char *)path,
 		&g->tex[index].width, &g->tex[index].height);
 	if (!g->tex[index].img)
-		return (error_msg("textures: xpm load failed"));
-	
-	g->tex[index].data = mlx_get_data_addr(g->tex[index].img, 
+		return (1);
+	g->tex[index].data = mlx_get_data_addr(g->tex[index].img,
 		&g->tex[index].bpp, &g->tex[index].line_len, &g->tex[index].endian);
 	if (!g->tex[index].data)
 	{
 		mlx_destroy_image(g->mlx, g->tex[index].img);
-		return (error_msg("textures: data addr failed"));
+		return (1);
 	}
-	
+	return (0);
+}
+
+static int generate_cyber_texture(t_game *g, int index)
+{
+	int w = 64, h = 64;
+	int x, y;
+	int bpp;
+	int bg = 0x0A0A12; /* dark background */
+	int grid = 0x00FFCC; /* neon grid default */
+	int trace = 0x00FF66; /* bright trace default */
+	/* Per-face palette */
+	if (index == TEX_NO) { grid = 0x00FF99; trace = 0x00FF33; }
+	else if (index == TEX_SO) { grid = 0xFF3300; trace = 0xFFFF00; }
+	else if (index == TEX_EA) { grid = 0x00AAFF; trace = 0x00FFFF; }
+	else if (index == TEX_WE) { grid = 0xFF8800; trace = 0xFFAA00; }
+	else if (index == TEX_DOOR) { grid = 0x00FF00; trace = 0x009900; bg = 0x111122; }
+
+	g->tex[index].img = mlx_new_image(g->mlx, w, h);
+	if (!g->tex[index].img)
+		return (error_msg("textures: gen image failed"));
+	g->tex[index].data = mlx_get_data_addr(g->tex[index].img,
+		&g->tex[index].bpp, &g->tex[index].line_len, &g->tex[index].endian);
+	if (!g->tex[index].data)
+	{
+		mlx_destroy_image(g->mlx, g->tex[index].img);
+		return (error_msg("textures: gen data addr failed"));
+	}
+	g->tex[index].width = w;
+	g->tex[index].height = h;
+	bpp = g->tex[index].bpp / 8;
+	for (y = 0; y < h; ++y)
+	{
+		for (x = 0; x < w; ++x)
+		{
+			int color = bg;
+			/* grid lines every 8 px */
+			if ((x % 8) == 0 || (y % 8) == 0)
+				color = grid;
+			/* diagonal traces */
+			if (((x + y) & 15) == 0 || (((x - y) & 15) == 0))
+				color = trace;
+			/* door center panel */
+			if (index == TEX_DOOR)
+			{
+				if (x > 18 && x < 46 && y > 12 && y < 40)
+					color = (y % 6 == 0 || x % 6 == 0) ? grid : 0x001A10;
+				/* two vertical LED stripes */
+				if ((x == 22 || x == 42) && y > 16 && y < 36)
+					color = trace;
+			}
+			char *p = g->tex[index].data + y * g->tex[index].line_len + x * bpp;
+			p[0] = (char)(color & 0xFF);
+			p[1] = (char)((color >> 8) & 0xFF);
+			p[2] = (char)((color >> 16) & 0xFF);
+			p[3] = 0;
+		}
+	}
 	return (0);
 }
 

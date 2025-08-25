@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
+#include "parser.h"
 
 int	is_map_line(const char *line)
 {
@@ -63,56 +64,8 @@ static int	store_texture(t_textures *tx, const char *id, const char *path)
 	return (0);
 }
 
-static int	read_u8(const char *s, size_t *i, int *out)
-{
-	size_t	k;
-	int		val;
 
-	*i = skip_spaces(s, *i);
-	k = *i;
-	if (!is_digit((unsigned char)s[k]))
-		return (error_msg("color: expected digit"));
-	val = 0;
-	while (s[k] && is_digit((unsigned char)s[k]))
-	{
-		val = val * 10 + (s[k] - '0');
-		k++;
-	}
-	if (val < 0 || val > 255)
-		return (error_msg("color: out of range"));
-	*out = val;
-	*i = k;
-	return (0);
-}
-
-static int	parse_rgb_triplet(const char *s, t_color *c)
-{
-	int		r;
-	int		g;
-	int		b;
-	size_t	i;
-
-	i = 0;
-	if (read_u8(s, &i, &r) != 0)
-		return (1);
-	i = skip_spaces(s, i);
-	if (s[i] != ',')
-		return (error_msg("color: expected comma"));
-	i++;
-	if (read_u8(s, &i, &g) != 0)
-		return (1);
-	i = skip_spaces(s, i);
-	if (s[i] != ',')
-		return (error_msg("color: expected comma"));
-	i++;
-	if (read_u8(s, &i, &b) != 0)
-		return (1);
-	c->r = r;
-	c->g = g;
-	c->b = b;
-	c->value = (r << 16) | (g << 8) | b;
-	return (0);
-}
+/* moved to parse_header.c */
 
 int	apply_directive(char *line, t_config *cfg, int *header_done)
 {
