@@ -6,9 +6,10 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 20:05:15 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/08/24 20:05:15 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/10 14:56:31 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "cub3d_bonus.h"
 #include <math.h>
 
@@ -73,7 +74,7 @@ void	apply_movement_bonus(t_game *g)
 	if (g->keys.left || g->keys.right)
 	{
 		rot = g->rot_speed;
-		if (g->keys.right)
+		if (g->keys.left)
 			rot = -rot;
 		old_dir_x = g->dir_x;
 		g->dir_x = g->dir_x * cos(rot) - g->dir_y * sin(rot);
