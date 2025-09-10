@@ -56,11 +56,7 @@ endif
 
 all: $(NAME)
 
-$(NAME): $(LIBFT) $(MLX) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LDLIBS) -o $(NAME)
-
-bonus: CFLAGS += -DBONUS
-bonus: $(LIBFT) $(MLX) $(OBJS_BONUS)
+$(NAME): $(LIBFT) $(MLX) $(OBJS_BONUS)
 	$(CC) $(CFLAGS) $(OBJS_BONUS) $(LDLIBS) -o $(NAME)
 
 %.o: %.c

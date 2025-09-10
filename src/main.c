@@ -6,14 +6,11 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 18:35:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/08/24 18:35:00 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/10 14:24:21 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#if defined(BONUS)
+
 # include "cub3d_bonus.h"
-#else
-# include "cub3d.h"
-#endif
 
 int	main(int argc, char **argv)
 {
