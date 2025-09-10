@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   input_doors.c                                :+:      :+:    :+:   */
+/*   input_doors.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/24 20:05:15 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/08/24 20:05:15 by hsharaf-         ###   ########.fr       */
+/*   Created: 2025/09/10 16:45:58 by hsharaf-          #+#    #+#             */
+/*   Updated: 2025/09/10 16:46:00 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "cub3d.h"
 
 /* Make door interaction robust by sampling along the facing direction
