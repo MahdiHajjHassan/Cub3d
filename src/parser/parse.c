@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_bonus.c                                     :+:      :+:    :+:   */
+/*   parse.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -9,12 +9,12 @@
 /*   Updated: 2025/08/24 18:22:01 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "cub3d_bonus.h"
+#include "cub3d.h"
 
 static int parse_color(const char *line, t_color *out_color);
-static int parse_map_bonus(char **lines, size_t count, size_t map_start, t_config *cfg);
-static int validate_map_bonus(const t_map *map);
-static void init_config_bonus(t_config *cfg);
+static int parse_map(char **lines, size_t count, size_t map_start, t_config *cfg);
+static int validate_map(const t_map *map);
+static void init_config(t_config *cfg);
 
 void free_config(t_config *cfg)
 {
@@ -43,7 +43,7 @@ if (cfg->textures.no) free(cfg->textures.no);
 		free(cfg->map.sprites);
 }
 
-static void init_config_bonus(t_config *cfg)
+static void init_config(t_config *cfg)
 {
 cfg->textures.no = NULL;
 	cfg->textures.so = NULL;
@@ -153,7 +153,7 @@ static int add_door(t_config *cfg, int x, int y)
 	return (0);
 }
 
-static int parse_map_bonus(char **lines, size_t count, size_t map_start, t_config *cfg)
+static int parse_map(char **lines, size_t count, size_t map_start, t_config *cfg)
 {
 	size_t i, j, max_width = 0;
 	int player_count = 0;
@@ -233,10 +233,10 @@ static int parse_map_bonus(char **lines, size_t count, size_t map_start, t_confi
 	if (player_count == 0)
 		return (error_msg("parse: no player found"));
 	
-	return (validate_map_bonus(&cfg->map));
+	return (validate_map(&cfg->map));
 }
 
-static int validate_map_bonus(const t_map *map)
+static int validate_map(const t_map *map)
 {
 	size_t i, j;
 
@@ -272,7 +272,7 @@ int parse_cub_file(const char *path, t_config *out_cfg)
 	size_t count, i, map_start = 0;
 	int no = 0, so = 0, ea = 0, we = 0, f = 0, c = 0;
 
-	init_config_bonus(out_cfg);
+	init_config(out_cfg);
 	
 	if (read_all_lines(path, &lines, &count) != 0)
 		return (1);
@@ -364,7 +364,7 @@ out_cfg->textures.we = ft_strdup(trimmed + 3);
 		return (error_msg("parse: no map found"));
 	}
 	
-	if (parse_map_bonus(lines, count, map_start, out_cfg) != 0)
+	if (parse_map(lines, count, map_start, out_cfg) != 0)
 	{
 		free_lines(lines, count);
 		return (1);

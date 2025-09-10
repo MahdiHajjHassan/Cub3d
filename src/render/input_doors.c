@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   input_doors_bonus.c                                :+:      :+:    :+:   */
+/*   input_doors.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -9,7 +9,7 @@
 /*   Updated: 2025/08/24 20:05:15 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "cub3d_bonus.h"
+#include "cub3d.h"
 
 /* Make door interaction robust by sampling along the facing direction
 ** from 0.5 to ~2.0 units. The first 'D' cell hit toggles. */

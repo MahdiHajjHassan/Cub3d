@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   textures_bonus.c                                  :+:      :+:    :+:   */
+/*   textures.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -9,7 +9,7 @@
 /*   Updated: 2025/08/24 18:22:01 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "cub3d_bonus.h"
+#include "cub3d.h"
 #include "mlx.h"
 
 static int load_wall_texture(t_game *g, const char *path, int index);

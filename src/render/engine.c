@@ -1,4 +1,16 @@
-#include "cub3d_bonus.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   engine.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/10 15:22:24 by hsharaf-          #+#    #+#             */
+/*   Updated: 2025/09/10 15:22:25 by hsharaf-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "cub3d.h"
 #include "mlx.h"
 
 /* Forward declarations */
@@ -6,7 +18,7 @@ int frame_init(t_game *g);
 void frame_destroy(t_game *g);
 static void fill_rect(t_img *img, int x0, int y0, int x1, int y1, int color);
 static void draw_vertical_stripe(t_game *g, int x, int tex_id, int draw_start, int draw_end, int line_height, double wall_x);
-void render_frame_bonus(t_game *g);
+void render_frame(t_game *g);
 
 /* Helper to clear a rectangle with a solid color (BGRA write) */
 static void fill_rect(t_img *img, int x0, int y0, int x1, int y1, int color)
@@ -100,7 +112,7 @@ static void draw_vertical_stripe(t_game *g, int x, int tex_id, int draw_start, i
 	}
 }
 
-void render_frame_bonus(t_game *g)
+void render_frame(t_game *g)
 {
 	int x;
 

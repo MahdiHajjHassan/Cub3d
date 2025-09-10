@@ -1,15 +1,14 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cub3d.h                                           :+:      :+:    :+:   */
+/*   cub3d.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/24 18:01:40 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/08/24 19:04:30 by hsharaf-         ###   ########.fr       */
+/*   Created: 2025/08/24 18:10:19 by hsharaf-          #+#    #+#             */
+/*   Updated: 2025/08/24 19:05:00 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #ifndef CUB3D_H
 # define CUB3D_H
 
@@ -19,6 +18,7 @@
 # include <fcntl.h>
 # include <stdbool.h>
 # include <math.h>
+# include <sys/time.h>
 # include "libft/libft.h"
 
 # define WIN_W 1280
@@ -31,12 +31,27 @@
 # define KEY_A 97
 # define KEY_S 115
 # define KEY_D 100
+# define KEY_SPACE 32
+
+# define MOUSE_LEFT 1
+# define MOUSE_RIGHT 3
 
 # define TEX_NO 0
 # define TEX_SO 1
 # define TEX_EA 2
 # define TEX_WE 3
-# define TEX_COUNT 4
+# define TEX_DOOR 4
+# define TEX_COUNT 5
+
+# define SPRITE_TEX_START 5
+# define MAX_SPRITES 100
+# define MAX_SPRITE_FRAMES 8
+
+# define MINIMAP_SIZE 200
+# define MINIMAP_MARGIN 10
+# define MINIMAP_SCALE 8
+
+# define TEX_TOTAL 805
 
 typedef struct s_color
 {
@@ -52,16 +67,43 @@ typedef struct s_textures
 	char	*so;
 	char	*ea;
 	char	*we;
+	char	*door;
+	char	**sprites;
+	int		sprite_count;
 }	t_textures;
+
+typedef struct s_door
+{
+	int		x;
+	int		y;
+	bool	is_open;
+	double	open_timer;
+}	t_door;
+
+typedef struct s_sprite
+{
+	double	x;
+	double	y;
+	int		texture_id;
+	int		frame_count;
+	int		current_frame;
+	double	frame_timer;
+	bool	animated;
+	double	distance;
+}	t_sprite;
 
 typedef struct s_map
 {
-	char	**grid;
-	size_t	width;
-	size_t	height;
-	size_t	player_x;
-	size_t	player_y;
-	double	player_angle;
+	char		**grid;
+	size_t		width;
+	size_t		height;
+	size_t		player_x;
+	size_t		player_y;
+	double		player_angle;
+	t_door		*doors;
+	int			door_count;
+	t_sprite	*sprites;
+	int			sprite_count;
 }	t_map;
 
 typedef struct s_config
@@ -91,26 +133,51 @@ typedef struct s_keys
 	int	d;
 	int	left;
 	int	right;
+	int	space;
 }	t_keys;
+
+typedef struct s_mouse
+{
+	int		x;
+	int		y;
+	int		last_x;
+	int		last_y;
+	bool	captured;
+}	t_mouse;
+
+typedef struct s_minimap
+{
+	int		size;
+	int		margin;
+	int		scale;
+	int		offset_x; /* origin inside the minimap image to center-fit the map */
+	int		offset_y;
+	t_img	img;
+}	t_minimap;
 
 typedef struct s_game
 {
-	void		*mlx;
-	void		*win;
-	t_img		frame;
-	t_img		tex[TEX_COUNT];
-	int			ceil_color;
-	int			floor_color;
-	const t_map	*map;
-	double		pos_x;
-	double		pos_y;
-	double		dir_x;
-	double		dir_y;
-	double		plane_x;
-	double		plane_y;
-	t_keys		keys;
-	double		move_speed;
-	double		rot_speed;
+	void			*mlx;
+	void			*win;
+	t_img			frame;
+	t_img			tex[TEX_TOTAL];
+	int				ceil_color;
+	int				floor_color;
+	const t_map		*map;
+	double			pos_x;
+	double			pos_y;
+	double			dir_x;
+	double			dir_y;
+	double			plane_x;
+	double			plane_y;
+	t_keys			keys;
+	t_mouse			mouse;
+	double			move_speed;
+	double			rot_speed;
+	t_minimap		minimap;
+	struct timeval	last_time;
+	double			frame_time;
+	int				closing;
 }	t_game;
 
 int		run_game(const t_config *cfg);
@@ -125,5 +192,17 @@ size_t	skip_spaces(const char *s, size_t i);
 size_t	skip_digits(const char *s, size_t i);
 char	*str_trim_spaces(const char *s);
 int		starts_with(const char *s, const char *prefix);
+void	update_sprites(t_game *g);
+void	render_sprites(t_game *g);
+void	render_minimap(t_game *g);
+int		init_minimap(t_game *g);
+void	destroy_minimap(t_game *g);
+void	handle_door_interaction(t_game *g);
+void	update_doors(t_game *g);
+int		on_mouse_move(int x, int y, void *param);
+bool	check_collision(t_game *g, double new_x, double new_y);
+void	apply_movement(t_game *g);
+void	render_frame(t_game *g);
+double	get_time_delta(struct timeval *last_time);
 
 #endif

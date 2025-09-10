@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   input_bonus.c                                      :+:      :+:    :+:   */
+/*   input.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -9,7 +9,7 @@
 /*   Updated: 2025/08/24 19:35:30 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "cub3d_bonus.h"
+#include "cub3d.h"
 #include "mlx.h"
 
 /* These helpers live in separate files to satisfy Norm limits */
@@ -17,8 +17,7 @@ void	handle_door_interaction(t_game *g);
 void	update_doors(t_game *g);
 int		on_mouse_move(int x, int y, void *param);
 
-/* Input hooks for bonus features */
-int	on_key_press_bonus(int keycode, void *param)
+int	on_key_press(int keycode, void *param)
 {
 	t_game	*g;
 
@@ -50,7 +49,7 @@ int	on_key_press_bonus(int keycode, void *param)
 	return (0);
 }
 
-int	on_key_release_bonus(int keycode, void *param)
+int	on_key_release(int keycode, void *param)
 {
 	t_game	*g;
 
@@ -72,7 +71,7 @@ int	on_key_release_bonus(int keycode, void *param)
 	return (0);
 }
 
-int	on_destroy_bonus(void *param)
+int	on_destroy(void *param)
 {
 	t_game	*g;
 
@@ -87,7 +86,7 @@ int	on_destroy_bonus(void *param)
 	return (0);
 }
 
-int	game_loop_bonus(void *param)
+int	game_loop(void *param)
 {
 	t_game	*g;
 
@@ -95,9 +94,9 @@ int	game_loop_bonus(void *param)
 	if (!g || g->closing)
 		return (0);
 	g->frame_time = get_time_delta(&g->last_time);
-	apply_movement_bonus(g);
+	apply_movement(g);
 	update_doors(g);
 	update_sprites(g);
-	render_frame_bonus(g);
+	render_frame(g);
 	return (0);
 }
