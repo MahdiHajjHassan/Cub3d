@@ -58,30 +58,30 @@ RST := \033[0m
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(MLX) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LDLIBS) -o $(NAME) || (printf '$(RED)Compilation failed — remove quiet to see errors$(RST)\n' && false)
-	printf '$(GREEN)%s compiled successfully$(RST)\n' $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(LDLIBS) -o $(NAME) > /dev/null 2>&1 || (printf '$(RED)Compilation failed — remove quiet to see errors$(RST)\n' && false)
+	@printf '$(GREEN)%s compiled successfully$(RST)\n' $(NAME)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@ > /dev/null 2>&1
 
 libft: $(LIBFT)
 $(LIBFT):
-	$(MAKE) -C $(LIBFT_DIR)
+	@$(MAKE) -C $(LIBFT_DIR) > /dev/null 2>&1
 
 mlx: $(MLX)
 $(MLX):
-	$(MAKE) -C $(MLX_DIR)
+	@$(MAKE) -C $(MLX_DIR) > /dev/null 2>&1
 
 clean:
-	$(RM) $(OBJS)
-	$(MAKE) -C $(LIBFT_DIR) clean
-	$(MAKE) -C $(MLX_DIR) clean
-	printf '$(RED)clean done$(RST)\n'
+	@$(RM) $(OBJS)
+	@$(MAKE) -C $(LIBFT_DIR) clean > /dev/null 2>&1
+	@$(MAKE) -C $(MLX_DIR) clean > /dev/null 2>&1
+	@printf '$(RED)clean done$(RST)\n'
 
 fclean: clean
-	$(RM) $(NAME)
-	$(MAKE) -C $(LIBFT_DIR) fclean || true
-	printf '$(RED)fclean done$(RST)\n'
+	@$(RM) $(NAME)
+	@$(MAKE) -C $(LIBFT_DIR) fclean > /dev/null 2>&1 || true
+	@printf '$(RED)fclean done$(RST)\n'
 
 re: fclean all
 
