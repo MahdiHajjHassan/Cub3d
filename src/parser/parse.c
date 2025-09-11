@@ -12,20 +12,26 @@
 
 #include "cub3d.h"
 
-static int parse_color(const char *line, t_color *out_color);
-static int parse_map(char **lines, size_t count, size_t map_start, t_config *cfg);
-static int validate_map(const t_map *map);
-static void init_config(t_config *cfg);
+static int	parse_color(const char *line, t_color *out_color);
+static int	parse_map(char **lines, size_t count, size_t map_start,
+				t_config *cfg);
+static int	validate_map(const t_map *map);
+static void	init_config(t_config *cfg);
 
-void free_config(t_config *cfg)
+void	free_config(t_config *cfg)
 {
-	int i;
+	int	i;
 
-if (cfg->textures.no) free(cfg->textures.no);
-	if (cfg->textures.so) free(cfg->textures.so);
-	if (cfg->textures.ea) free(cfg->textures.ea);
-	if (cfg->textures.we) free(cfg->textures.we);
-	if (cfg->textures.door) free(cfg->textures.door);
+	if (cfg->textures.no)
+		free(cfg->textures.no);
+	if (cfg->textures.so)
+		free(cfg->textures.so);
+	if (cfg->textures.ea)
+		free(cfg->textures.ea);
+	if (cfg->textures.we)
+		free(cfg->textures.we);
+	if (cfg->textures.door)
+		free(cfg->textures.door);
 	if (cfg->textures.sprites)
 	{
 		i = 0;
@@ -44,9 +50,9 @@ if (cfg->textures.no) free(cfg->textures.no);
 		free(cfg->map.sprites);
 }
 
-static void init_config(t_config *cfg)
+static void	init_config(t_config *cfg)
 {
-cfg->textures.no = NULL;
+	cfg->textures.no = NULL;
 	cfg->textures.so = NULL;
 	cfg->textures.ea = NULL;
 	cfg->textures.we = NULL;
@@ -64,12 +70,16 @@ cfg->textures.no = NULL;
 	cfg->map.sprite_count = 0;
 }
 
-static int parse_color(const char *line, t_color *out_color)
+static int	parse_color(const char *line, t_color *out_color)
 {
-	char *trimmed = str_trim_spaces(line);
-	int r, g, b;
-	char *comma1, *comma2;
-	
+	char	*trimmed;
+	int		r;
+	int		g;
+	int		b;
+	char	*comma1;
+	char	*comma2;
+
+	trimmed = str_trim_spaces(line);
 	if (!trimmed)
 		return (error_msg("parse: memory error"));
 	comma1 = ft_strchr(trimmed, ',');
@@ -99,12 +109,12 @@ static int parse_color(const char *line, t_color *out_color)
 	return (0);
 }
 
-static int add_sprite(t_config *cfg, int x, int y, char type)
+static int	add_sprite(t_config *cfg, int x, int y, char type)
 {
-	(void)type;
-	t_sprite *new_sprites;
-	int i;
+	t_sprite	*new_sprites;
+	int			i;
 
+	(void)type;
 	new_sprites = malloc(sizeof(t_sprite) * (cfg->map.sprite_count + 1));
 	if (!new_sprites)
 		return (error_msg("parse: memory error"));
@@ -116,7 +126,7 @@ static int add_sprite(t_config *cfg, int x, int y, char type)
 	}
 	new_sprites[cfg->map.sprite_count].x = x + 0.5;
 	new_sprites[cfg->map.sprite_count].y = y + 0.5;
-	new_sprites[cfg->map.sprite_count].texture_id = 0; /* Default sprite */
+	new_sprites[cfg->map.sprite_count].texture_id = 0;
 	new_sprites[cfg->map.sprite_count].frame_count = 2;
 	new_sprites[cfg->map.sprite_count].current_frame = 0;
 	new_sprites[cfg->map.sprite_count].frame_timer = 0.0;
@@ -129,10 +139,10 @@ static int add_sprite(t_config *cfg, int x, int y, char type)
 	return (0);
 }
 
-static int add_door(t_config *cfg, int x, int y)
+static int	add_door(t_config *cfg, int x, int y)
 {
-	t_door *new_doors;
-	int i;
+	t_door	*new_doors;
+	int		i;
 
 	new_doors = malloc(sizeof(t_door) * (cfg->map.door_count + 1));
 	if (!new_doors)
@@ -154,17 +164,19 @@ static int add_door(t_config *cfg, int x, int y)
 	return (0);
 }
 
-static int parse_map(char **lines, size_t count, size_t map_start, t_config *cfg)
+static int	parse_map(char **lines, size_t count, size_t map_start, t_config *cfg)
 {
-	size_t i, j, max_width = 0;
-	int player_count = 0;
+	size_t	i;
+	size_t	j;
+	size_t	max_width;
+	int		player_count;
 
+	max_width = 0;
+	player_count = 0;
 	cfg->map.height = count - map_start;
 	cfg->map.grid = malloc(sizeof(char *) * cfg->map.height);
 	if (!cfg->map.grid)
 		return (error_msg("parse: memory error"));
-
-	/* Find maximum width */
 	i = map_start;
 	while (i < count)
 	{
@@ -173,8 +185,6 @@ static int parse_map(char **lines, size_t count, size_t map_start, t_config *cfg
 		i++;
 	}
 	cfg->map.width = max_width;
-
-	/* Copy and pad lines */
 	i = map_start;
 	while (i < count)
 	{
@@ -182,8 +192,6 @@ static int parse_map(char **lines, size_t count, size_t map_start, t_config *cfg
 		if (!cfg->map.grid[i - map_start])
 			return (error_msg("parse: memory error"));
 		ft_strlcpy(cfg->map.grid[i - map_start], lines[i], max_width + 1);
-		
-		/* Pad with spaces if needed */
 		j = ft_strlen(cfg->map.grid[i - map_start]);
 		while (j < max_width)
 		{
@@ -193,36 +201,43 @@ static int parse_map(char **lines, size_t count, size_t map_start, t_config *cfg
 		cfg->map.grid[i - map_start][max_width] = '\0';
 		i++;
 	}
-
-	/* Process map elements and validate */
 	i = 0;
 	while (i < cfg->map.height)
 	{
 		j = 0;
 		while (j < cfg->map.width)
 		{
-			char c = cfg->map.grid[i][j];
+			char	c;
+
+			c = cfg->map.grid[i][j];
 			if (c == 'N' || c == 'S' || c == 'E' || c == 'W')
 			{
 				if (player_count > 0)
 					return (error_msg("parse: multiple players found"));
 				cfg->map.player_x = j;
 				cfg->map.player_y = i;
-				cfg->map.player_angle = (c == 'N') ? M_PI / 2 : (c == 'S') ? -M_PI / 2 : (c == 'E') ? 0 : M_PI;
-				cfg->map.grid[i][j] = '0'; /* Replace with empty space */
+				if (c == 'N')
+					cfg->map.player_angle = M_PI / 2;
+				else if (c == 'S')
+					cfg->map.player_angle = -M_PI / 2;
+				else if (c == 'E')
+					cfg->map.player_angle = 0;
+				else
+					cfg->map.player_angle = M_PI;
+				cfg->map.grid[i][j] = '0';
 				player_count++;
 			}
 			else if (c == 'D')
 			{
 				if (add_door(cfg, j, i) != 0)
 					return (1);
-				cfg->map.grid[i][j] = 'D'; /* Keep as door */
+				cfg->map.grid[i][j] = 'D';
 			}
 			else if (c == '2')
 			{
 				if (add_sprite(cfg, j, i, c) != 0)
 					return (1);
-				cfg->map.grid[i][j] = '0'; /* Replace with empty space */
+				cfg->map.grid[i][j] = '0';
 			}
 			else if (c != '0' && c != '1' && c != ' ')
 				return (error_msg("parse: invalid map character"));
@@ -230,34 +245,32 @@ static int parse_map(char **lines, size_t count, size_t map_start, t_config *cfg
 		}
 		i++;
 	}
-
 	if (player_count == 0)
 		return (error_msg("parse: no player found"));
-	
 	return (validate_map(&cfg->map));
 }
 
-static int validate_map(const t_map *map)
+static int	validate_map(const t_map *map)
 {
-	size_t i, j;
+	size_t	i;
+	size_t	j;
 
-	/* Check if map is closed */
 	i = 0;
 	while (i < map->height)
 	{
 		j = 0;
 		while (j < map->width)
 		{
-			char c = map->grid[i][j];
-			if (c == '0' || c == 'D') /* Empty space or door needs walls around */
+			char	c;
+
+			c = map->grid[i][j];
+			if (c == '0' || c == 'D')
 			{
-				/* Check boundaries */
-				if (i == 0 || i == map->height - 1 || j == 0 || j == map->width - 1)
+				if (i == 0 || i == map->height - 1 || j == 0
+					|| j == map->width - 1)
 					return (error_msg("parse: map not closed"));
-				
-				/* Check adjacent cells */
-				if (map->grid[i-1][j] == ' ' || map->grid[i+1][j] == ' ' ||
-					map->grid[i][j-1] == ' ' || map->grid[i][j+1] == ' ')
+				if (map->grid[i - 1][j] == ' ' || map->grid[i + 1][j] == ' '
+					|| map->grid[i][j - 1] == ' ' || map->grid[i][j + 1] == ' ')
 					return (error_msg("parse: map not closed"));
 			}
 			j++;
@@ -267,55 +280,67 @@ static int validate_map(const t_map *map)
 	return (0);
 }
 
-int parse_cub_file(const char *path, t_config *out_cfg)
+int	parse_cub_file(const char *path, t_config *out_cfg)
 {
-	char **lines;
-	size_t count, i, map_start = 0;
-	int no = 0, so = 0, ea = 0, we = 0, f = 0, c = 0;
+	char	**lines;
+	size_t	count;
+	size_t	i;
+	size_t	map_start;
+	int		no;
+	int		so;
+	int		ea;
+	int		we;
+	int		f;
+	int		c;
 
+	map_start = 0;
+	no = 0;
+	so = 0;
+	ea = 0;
+	we = 0;
+	f = 0;
+	c = 0;
 	init_config(out_cfg);
-	
 	if (read_all_lines(path, &lines, &count) != 0)
 		return (1);
-	
 	i = 0;
 	while (i < count)
 	{
-		char *trimmed = str_trim_spaces(lines[i]);
+		char	*trimmed;
+
+		trimmed = str_trim_spaces(lines[i]);
 		if (!trimmed)
 		{
 			free_lines(lines, count);
 			return (error_msg("parse: memory error"));
 		}
-		
 		if (ft_strlen(trimmed) == 0 || trimmed[0] == '\0')
 		{
 			free(trimmed);
 			i++;
-			continue;
+			continue ;
 		}
-		
 		if (starts_with(trimmed, "NO ") && !no)
 		{
-out_cfg->textures.no = ft_strdup(trimmed + 3);
+			out_cfg->textures.no = ft_strdup(trimmed + 3);
 			no = 1;
 		}
 		else if (starts_with(trimmed, "SO ") && !so)
 		{
-out_cfg->textures.so = ft_strdup(trimmed + 3);
+			out_cfg->textures.so = ft_strdup(trimmed + 3);
 			so = 1;
 		}
 		else if (starts_with(trimmed, "EA ") && !ea)
 		{
-out_cfg->textures.ea = ft_strdup(trimmed + 3);
+			out_cfg->textures.ea = ft_strdup(trimmed + 3);
 			ea = 1;
 		}
 		else if (starts_with(trimmed, "WE ") && !we)
 		{
-out_cfg->textures.we = ft_strdup(trimmed + 3);
+			out_cfg->textures.we = ft_strdup(trimmed + 3);
 			we = 1;
 		}
-		else if (starts_with(trimmed, "DO ")) /* Door texture */
+		else if (starts_with(trimmed, "DO "))
 		{
 			out_cfg->textures.door = ft_strdup(trimmed + 3);
 		}
@@ -339,38 +364,33 @@ out_cfg->textures.we = ft_strdup(trimmed + 3);
 			}
 			c = 1;
 		}
-		else if (ft_strchr(trimmed, '1') || ft_strchr(trimmed, '0') || 
-				 ft_strchr(trimmed, 'N') || ft_strchr(trimmed, 'S') || 
-				 ft_strchr(trimmed, 'E') || ft_strchr(trimmed, 'W') ||
-				 ft_strchr(trimmed, 'D') || ft_strchr(trimmed, '2'))
+		else if (ft_strchr(trimmed, '1') || ft_strchr(trimmed, '0')
+			|| ft_strchr(trimmed, 'N') || ft_strchr(trimmed, 'S')
+			|| ft_strchr(trimmed, 'E') || ft_strchr(trimmed, 'W')
+			|| ft_strchr(trimmed, 'D') || ft_strchr(trimmed, '2'))
 		{
 			map_start = i;
 			free(trimmed);
-			break;
+			break ;
 		}
-		
 		free(trimmed);
 		i++;
 	}
-	
 	if (!no || !so || !ea || !we || !f || !c)
 	{
 		free_lines(lines, count);
 		return (error_msg("parse: missing required elements"));
 	}
-	
 	if (map_start == 0)
 	{
 		free_lines(lines, count);
 		return (error_msg("parse: no map found"));
 	}
-	
 	if (parse_map(lines, count, map_start, out_cfg) != 0)
 	{
 		free_lines(lines, count);
 		return (1);
 	}
-	
 	free_lines(lines, count);
 	return (0);
 }
