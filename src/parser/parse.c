@@ -117,7 +117,7 @@ static int add_sprite(t_config *cfg, int x, int y, char type)
 	new_sprites[cfg->map.sprite_count].x = x + 0.5;
 	new_sprites[cfg->map.sprite_count].y = y + 0.5;
 	new_sprites[cfg->map.sprite_count].texture_id = 0; /* Default sprite */
-	new_sprites[cfg->map.sprite_count].frame_count = 4;
+	new_sprites[cfg->map.sprite_count].frame_count = 2;
 	new_sprites[cfg->map.sprite_count].current_frame = 0;
 	new_sprites[cfg->map.sprite_count].frame_timer = 0.0;
 	new_sprites[cfg->map.sprite_count].animated = true;

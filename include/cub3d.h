@@ -179,6 +179,7 @@ typedef struct s_game
 	struct timeval	last_time;
 	double			frame_time;
 	int				closing;
+	double			zbuffer[WIN_W];
 }	t_game;
 
 int		run_game(const t_config *cfg);

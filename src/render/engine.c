@@ -220,6 +220,9 @@ void render_frame(t_game *g)
 		else if (side == 1 && ray_dir_y > 0) tex_id = TEX_NO;
 		else tex_id = TEX_SO;
 
+		/* store depth for sprites */
+		g->zbuffer[x] = perp_wall_dist;
+		
 		draw_vertical_stripe(g, x, tex_id, draw_start, draw_end, line_height, wall_x);
 		x++;
 	}

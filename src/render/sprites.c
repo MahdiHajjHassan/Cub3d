@@ -33,7 +33,7 @@ double get_time_delta(struct timeval *last_time)
 void update_sprites(t_game *g)
 {
 	int i;
-	double frame_duration = 0.2; /* 200ms per frame */
+	double frame_duration = 0.5; /* 500ms per frame for open/close loop */
 	
 	i = 0;
 	while (i < g->map->sprite_count)
@@ -161,6 +161,15 @@ static void draw_sprite_column(t_game *g, t_sprite *sprite, int stripe, int draw
 		tex_x = 0;
 	if (tex_x >= tex->width)
 		tex_x = tex->width - 1;
+
+	/* depth test: sprite column should be drawn only if in front of wall */
+	/* transform_y for current sprite is recomputed similarly to render_single_sprite to get depth */
+	double sprite_x_world = sprite->x - g->pos_x;
+	double sprite_y_world = sprite->y - g->pos_y;
+	double inv_det = 1.0 / (g->plane_x * g->dir_y - g->dir_x * g->plane_y);
+	double transform_y = inv_det * (-g->plane_y * sprite_x_world + g->plane_x * sprite_y_world);
+	if (transform_y <= 0 || stripe < 0 || stripe >= WIN_W || transform_y >= g->zbuffer[stripe])
+		return;
 	
 	int y = draw_start_y;
 	while (y < draw_end_y)
@@ -183,14 +192,26 @@ static void draw_sprite_column(t_game *g, t_sprite *sprite, int stripe, int draw
 			char *tex_pixel = tex->data + tex_y * tex->line_len + tex_x * tex_bpp;
 			char *frame_pixel = g->frame.data + y * g->frame.line_len + stripe * frame_bpp;
 			
-			/* Check for transparency (assuming black is transparent) */
-			if (tex_pixel[0] != 0 || tex_pixel[1] != 0 || tex_pixel[2] != 0)
+			/* transparency: use chroma key instead of unreliable alpha from MLX */
+			unsigned char b = (unsigned char)tex_pixel[0];
+			unsigned char gch = (unsigned char)tex_pixel[1];
+			unsigned char r = (unsigned char)tex_pixel[2];
+			/* Skip near pure green placeholder */
+			if (gch > 200 && r < 50 && b < 50)
 			{
-				frame_pixel[0] = tex_pixel[0];
-				frame_pixel[1] = tex_pixel[1];
-				frame_pixel[2] = tex_pixel[2];
-				frame_pixel[3] = 0;
+				y++;
+				continue;
 			}
+			/* Also skip pure black if used as transparency in assets */
+			if (r == 0 && gch == 0 && b == 0)
+			{
+				y++;
+				continue;
+			}
+			frame_pixel[0] = b;
+			frame_pixel[1] = gch;
+			frame_pixel[2] = r;
+			frame_pixel[3] = 0;
 		}
 		y++;
 	}
