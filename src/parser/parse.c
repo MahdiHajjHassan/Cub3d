@@ -13,14 +13,20 @@
 #include "cub3d.h"
 
 static int	parse_color(const char *line, t_color *out_color);
-static int	parse_map(char **lines, size_t count, size_t map_start, t_config *cfg);
+static int	parse_map(char **lines, size_t count, size_t map_start,
+		t_config *cfg);
 static int	validate_map(const t_map *map);
 static void	init_config(t_config *cfg);
+static int	parse_header_line(const char *trimmed, t_config *out_cfg,
+		t_parse_flags *flags);
+static int	validate_required_elements(const t_parse_flags *flags);
+static int	parse_headers(char **lines, size_t count, t_config *out_cfg,
+		t_parse_flags *flags, size_t *map_start);
+static int	validate_and_parse_map(char **lines, size_t count,
+		t_config *out_cfg, t_parse_flags *flags, size_t map_start);
 
-void	free_config(t_config *cfg)
+static void	free_textures(t_config *cfg)
 {
-	int	i;
-
 	if (cfg->textures.no)
 		free(cfg->textures.no);
 	if (cfg->textures.so)
@@ -31,22 +37,38 @@ void	free_config(t_config *cfg)
 		free(cfg->textures.we);
 	if (cfg->textures.door)
 		free(cfg->textures.door);
-	if (cfg->textures.sprites)
+}
+
+static void	free_sprites(t_config *cfg)
+{
+	int	i;
+
+	if (!cfg->textures.sprites)
+		return ;
+	i = 0;
+	while (i < cfg->textures.sprite_count)
 	{
-		i = 0;
-		while (i < cfg->textures.sprite_count)
-		{
-			if (cfg->textures.sprites[i])
-				free(cfg->textures.sprites[i]);
-			i++;
-		}
-		free(cfg->textures.sprites);
+		if (cfg->textures.sprites[i])
+			free(cfg->textures.sprites[i]);
+		i++;
 	}
+	free(cfg->textures.sprites);
+}
+
+static void	free_map(t_config *cfg)
+{
 	free_lines(cfg->map.grid, cfg->map.height);
 	if (cfg->map.doors)
 		free(cfg->map.doors);
 	if (cfg->map.sprites)
 		free(cfg->map.sprites);
+}
+
+void	free_config(t_config *cfg)
+{
+	free_textures(cfg);
+	free_sprites(cfg);
+	free_map(cfg);
 }
 
 static void	init_config(t_config *cfg)
@@ -69,32 +91,32 @@ static void	init_config(t_config *cfg)
 	cfg->map.sprite_count = 0;
 }
 
-static int	parse_color(const char *line, t_color *out_color)
+static int	validate_and_split(char *trimmed, char **comma1, char **comma2)
 {
-	char	*trimmed;
-	int		r;
-	int		g;
-	int		b;
-	char	*comma1;
-	char	*comma2;
+	*comma1 = ft_strchr(trimmed, ',');
+	if (!*comma1)
+	{
+		free(trimmed);
+		return (error_msg("parse: color format error"));
+	}
+	**comma1 = '\0';
+	*comma2 = ft_strchr(*comma1 + 1, ',');
+	if (!*comma2)
+	{
+		free(trimmed);
+		return (error_msg("parse: color format error"));
+	}
+	**comma2 = '\0';
+	return (0);
+}
 
-	trimmed = str_trim_spaces(line);
-	if (!trimmed)
-		return (error_msg("parse: memory error"));
-	comma1 = ft_strchr(trimmed, ',');
-	if (!comma1)
-	{
-		free(trimmed);
-		return (error_msg("parse: color format error"));
-	}
-	*comma1 = '\0';
-	comma2 = ft_strchr(comma1 + 1, ',');
-	if (!comma2)
-	{
-		free(trimmed);
-		return (error_msg("parse: color format error"));
-	}
-	*comma2 = '\0';
+static int	assign_rgb_values(
+	char *trimmed, char *comma1, char *comma2, t_color *out_color)
+{
+	int	r;
+	int	g;
+	int	b;
+
 	r = ft_atoi(trimmed);
 	g = ft_atoi(comma1 + 1);
 	b = ft_atoi(comma2 + 1);
@@ -108,29 +130,56 @@ static int	parse_color(const char *line, t_color *out_color)
 	return (0);
 }
 
+static int	parse_color(const char *line, t_color *out_color)
+{
+	char	*trimmed;
+	char	*comma1;
+	char	*comma2;
+
+	trimmed = str_trim_spaces(line);
+	if (!trimmed)
+		return (error_msg("parse: memory error"));
+	if (validate_and_split(trimmed, &comma1, &comma2) != 0)
+		return (-1);
+	return (assign_rgb_values(trimmed, comma1, comma2, out_color));
+}
+
+static int	copy_existing_sprites(
+	t_config *cfg, t_sprite *new_sprites, int count)
+{
+	int	i;
+
+	i = 0;
+	while (i < count)
+	{
+		new_sprites[i] = cfg->map.sprites[i];
+		i++;
+	}
+	return (0);
+}
+
+static void	init_new_sprite(t_sprite *sprite, int x, int y)
+{
+	sprite->x = x + 0.5;
+	sprite->y = y + 0.5;
+	sprite->texture_id = 0;
+	sprite->frame_count = 2;
+	sprite->current_frame = 0;
+	sprite->frame_timer = 0.0;
+	sprite->animated = true;
+	sprite->distance = 0.0;
+}
+
 static int	add_sprite(t_config *cfg, int x, int y, char type)
 {
 	t_sprite	*new_sprites;
-	int			i;
 
 	(void)type;
 	new_sprites = malloc(sizeof(t_sprite) * (cfg->map.sprite_count + 1));
 	if (!new_sprites)
 		return (error_msg("parse: memory error"));
-	i = 0;
-	while (i < cfg->map.sprite_count)
-	{
-		new_sprites[i] = cfg->map.sprites[i];
-		i++;
-	}
-	new_sprites[cfg->map.sprite_count].x = x + 0.5;
-	new_sprites[cfg->map.sprite_count].y = y + 0.5;
-	new_sprites[cfg->map.sprite_count].texture_id = 0;
-	new_sprites[cfg->map.sprite_count].frame_count = 2;
-	new_sprites[cfg->map.sprite_count].current_frame = 0;
-	new_sprites[cfg->map.sprite_count].frame_timer = 0.0;
-	new_sprites[cfg->map.sprite_count].animated = true;
-	new_sprites[cfg->map.sprite_count].distance = 0.0;
+	copy_existing_sprites(cfg, new_sprites, cfg->map.sprite_count);
+	init_new_sprite(&new_sprites[cfg->map.sprite_count], x, y);
 	if (cfg->map.sprites)
 		free(cfg->map.sprites);
 	cfg->map.sprites = new_sprites;
@@ -163,78 +212,116 @@ static int	add_door(t_config *cfg, int x, int y)
 	return (0);
 }
 
-static int	parse_map(char **lines, size_t count, size_t map_start, t_config *cfg)
+
+static size_t	get_max_width(char **lines, size_t start, size_t count)
 {
 	size_t	i;
-	size_t	j;
 	size_t	max_width;
-	int		player_count;
-
+	
+	i = start;
 	max_width = 0;
-	player_count = 0;
-	cfg->map.height = count - map_start;
-	cfg->map.grid = malloc(sizeof(char *) * cfg->map.height);
-	if (!cfg->map.grid)
-		return (error_msg("parse: memory error"));
-	i = map_start;
 	while (i < count)
 	{
 		if (ft_strlen(lines[i]) > max_width)
-			max_width = ft_strlen(lines[i]);
-		i++;
-	}
-	cfg->map.width = max_width;
-	i = map_start;
+		max_width = ft_strlen(lines[i]);
+	i++;
+}
+return (max_width);
+}
+
+static int	fill_map_grid(
+	t_config *cfg, char **lines, size_t start, size_t count)
+	{
+	size_t	i;
+	size_t	j;
+
+	i = start;
 	while (i < count)
 	{
-		cfg->map.grid[i - map_start] = malloc(max_width + 1);
-		if (!cfg->map.grid[i - map_start])
-			return (error_msg("parse: memory error"));
-		ft_strlcpy(cfg->map.grid[i - map_start], lines[i], max_width + 1);
-		j = ft_strlen(cfg->map.grid[i - map_start]);
-		while (j < max_width)
+		cfg->map.grid[i - start] = malloc(cfg->map.width + 1);
+		if (!cfg->map.grid[i - start])
+		return (error_msg("parse: memory error"));
+		ft_strlcpy(cfg->map.grid[i - start], lines[i], cfg->map.width + 1);
+		j = ft_strlen(cfg->map.grid[i - start]);
+		while (j < cfg->map.width)
 		{
-			cfg->map.grid[i - map_start][j] = ' ';
+			cfg->map.grid[i - start][j] = ' ';
 			j++;
 		}
-		cfg->map.grid[i - map_start][max_width] = '\0';
+		cfg->map.grid[i - start][cfg->map.width] = '\0';
 		i++;
 	}
+	return (0);
+}
+
+static int	handle_map_char(
+	t_config *cfg, char c, size_t i, size_t j, int *player_count)
+{
+	if (c == 'N' || c == 'S' || c == 'E' || c == 'W')
+	{
+		if (*player_count > 0)
+			return (error_msg("parse: multiple players found"));
+		cfg->map.player_x = j;
+		cfg->map.player_y = i;
+		cfg->map.player_angle = (c == 'N') ? M_PI / 2 :
+			(c == 'S') ? -M_PI / 2 : (c == 'E') ? 0 : M_PI;
+		cfg->map.grid[i][j] = '0';
+		(*player_count)++;
+	}
+	else if (c == 'D')
+	{
+		if (add_door(cfg, j, i) != 0)
+			return (1);
+		cfg->map.grid[i][j] = 'D';
+	}
+	else if (c == '2')
+	{
+		if (add_sprite(cfg, j, i, c) != 0)
+			return (1);
+		cfg->map.grid[i][j] = '0';
+	}
+	else if (c != '0' && c != '1' && c != ' ')
+		return (error_msg("parse: invalid map character"));
+	return (0);
+}
+
+static int	parse_map_cells(t_config *cfg, int *player_count)
+{
+	size_t	i;
+	size_t	j;
+	char	c;
+
 	i = 0;
 	while (i < cfg->map.height)
 	{
 		j = 0;
 		while (j < cfg->map.width)
 		{
-			char	c = cfg->map.grid[i][j];
-			if (c == 'N' || c == 'S' || c == 'E' || c == 'W')
-			{
-				if (player_count > 0)
-					return (error_msg("parse: multiple players found"));
-				cfg->map.player_x = j;
-				cfg->map.player_y = i;
-				cfg->map.player_angle = (c == 'N') ? M_PI / 2 : (c == 'S') ? -M_PI / 2 : (c == 'E') ? 0 : M_PI;
-				cfg->map.grid[i][j] = '0';
-				player_count++;
-			}
-			else if (c == 'D')
-			{
-				if (add_door(cfg, j, i) != 0)
-					return (1);
-				cfg->map.grid[i][j] = 'D';
-			}
-			else if (c == '2')
-			{
-				if (add_sprite(cfg, j, i, c) != 0)
-					return (1);
-				cfg->map.grid[i][j] = '0';
-			}
-			else if (c != '0' && c != '1' && c != ' ')
-				return (error_msg("parse: invalid map character"));
+			c = cfg->map.grid[i][j];
+			if (handle_map_char(cfg, c, i, j, player_count) != 0)
+				return (1);
 			j++;
 		}
 		i++;
 	}
+	return (0);
+}
+
+static int	parse_map(
+	char **lines, size_t count, size_t map_start, t_config *cfg)
+{
+	int	player_count;
+
+	cfg->map.height = count - map_start;
+	cfg->map.grid = malloc(sizeof(char *) * cfg->map.height);
+	if (!cfg->map.grid)
+		return (error_msg("parse: memory error"));
+	cfg->map.width = get_max_width(lines, map_start, count);
+	if (fill_map_grid(cfg, lines, map_start, count) != 0)
+		return (1);
+	player_count = 0;
+	if (parse_map_cells(cfg, &player_count) != 0)
+		return (1);
 	if (player_count == 0)
 		return (error_msg("parse: no player found"));
 	return (validate_map(&cfg->map));
@@ -244,6 +331,7 @@ static int	validate_map(const t_map *map)
 {
 	size_t	i;
 	size_t	j;
+	char	c;
 
 	i = 0;
 	while (i < map->height)
@@ -251,10 +339,11 @@ static int	validate_map(const t_map *map)
 		j = 0;
 		while (j < map->width)
 		{
-			char	c = map->grid[i][j];
+			c = map->grid[i][j];
 			if (c == '0' || c == 'D')
 			{
-				if (i == 0 || i == map->height - 1 || j == 0 || j == map->width - 1)
+				if (i == 0 || i == map->height - 1 || j == 0
+					|| j == map->width - 1)
 					return (error_msg("parse: map not closed"));
 				if (map->grid[i - 1][j] == ' ' || map->grid[i + 1][j] == ' ' ||
 					map->grid[i][j - 1] == ' ' || map->grid[i][j + 1] == ' ')
@@ -267,33 +356,85 @@ static int	validate_map(const t_map *map)
 	return (0);
 }
 
-int	parse_cub_file(const char *path, t_config *out_cfg)
+t_parse_flags	init_flags(void)
 {
-	char	**lines;
-	size_t	count;
-	size_t	i;
-	size_t	map_start;
-	int		no;
-	int		so;
-	int		ea;
-	int		we;
-	int		f;
-	int		c;
+	t_parse_flags flags;
 
-	map_start = 0;
-	no = 0;
-	so = 0;
-	ea = 0;
-	we = 0;
-	f = 0;
-	c = 0;
-	init_config(out_cfg);
-	if (read_all_lines(path, &lines, &count) != 0)
-		return (1);
-	i = 0;
-	while (i < count)
+	flags.no = 0;
+	flags.so = 0;
+	flags.ea = 0;
+	flags.we = 0;
+	flags.f = 0;
+	flags.c = 0;
+	return flags;
+}
+
+static int	parse_header_line(const char *trimmed, t_config *out_cfg,
+		t_parse_flags *flags)
+{
+	if (starts_with(trimmed, "NO ") && !flags->no)
 	{
-		char	*trimmed = str_trim_spaces(lines[i]);
+		out_cfg->textures.no = ft_strdup(trimmed + 3);
+		flags->no = 1;
+	}
+	else if (starts_with(trimmed, "SO ") && !flags->so)
+	{
+		out_cfg->textures.so = ft_strdup(trimmed + 3);
+		flags->so = 1;
+	}
+	else if (starts_with(trimmed, "EA ") && !flags->ea)
+	{
+		out_cfg->textures.ea = ft_strdup(trimmed + 3);
+		flags->ea = 1;
+	}
+	else if (starts_with(trimmed, "WE ") && !flags->we)
+	{
+		out_cfg->textures.we = ft_strdup(trimmed + 3);
+		flags->we = 1;
+	}
+	else if (starts_with(trimmed, "DO "))
+	{
+		out_cfg->textures.door = ft_strdup(trimmed + 3);
+	}
+	else if (starts_with(trimmed, "F ") && !flags->f)
+	{
+		if (parse_color(trimmed + 2, &out_cfg->floor_color) != 0)
+			return (1);
+		flags->f = 1;
+	}
+	else if (starts_with(trimmed, "C ") && !flags->c)
+	{
+		if (parse_color(trimmed + 2, &out_cfg->ceiling_color) != 0)
+			return (1);
+		flags->c = 1;
+	}
+	else if (ft_strchr(trimmed, '1') || ft_strchr(trimmed, '0')
+		|| ft_strchr(trimmed, 'N') || ft_strchr(trimmed, 'S')
+		|| ft_strchr(trimmed, 'E') || ft_strchr(trimmed, 'W')
+		|| ft_strchr(trimmed, 'D') || ft_strchr(trimmed, '2'))
+	{
+		return (2);
+	}
+	return (0);
+}
+
+static int	validate_required_elements(const t_parse_flags *flags)
+{
+	if (!flags->no || !flags->so || !flags->ea || !flags->we
+		|| !flags->f || !flags->c)
+		return (error_msg("parse: missing required elements"));
+	return (0);
+}
+
+static int	parse_headers(char **lines, size_t count, t_config *out_cfg,
+		t_parse_flags *flags, size_t *map_start)
+{
+	char	*trimmed;
+	int		result;
+
+	while (*map_start < count)
+	{
+		trimmed = str_trim_spaces(lines[*map_start]);
 		if (!trimmed)
 		{
 			free_lines(lines, count);
@@ -302,69 +443,34 @@ int	parse_cub_file(const char *path, t_config *out_cfg)
 		if (ft_strlen(trimmed) == 0 || trimmed[0] == '\0')
 		{
 			free(trimmed);
-			i++;
+			(*map_start)++;
 			continue ;
 		}
-		if (starts_with(trimmed, "NO ") && !no)
+		result = parse_header_line(trimmed, out_cfg, flags);
+		if (result == 1)
 		{
-			out_cfg->textures.no = ft_strdup(trimmed + 3);
-			no = 1;
+			free(trimmed);
+			free_lines(lines, count);
+			return (1);
 		}
-		else if (starts_with(trimmed, "SO ") && !so)
+		if (result == 2)
 		{
-			out_cfg->textures.so = ft_strdup(trimmed + 3);
-			so = 1;
-		}
-		else if (starts_with(trimmed, "EA ") && !ea)
-		{
-			out_cfg->textures.ea = ft_strdup(trimmed + 3);
-			ea = 1;
-		}
-		else if (starts_with(trimmed, "WE ") && !we)
-		{
-			out_cfg->textures.we = ft_strdup(trimmed + 3);
-			we = 1;
-		}
-		else if (starts_with(trimmed, "DO "))
-		{
-			out_cfg->textures.door = ft_strdup(trimmed + 3);
-		}
-		else if (starts_with(trimmed, "F ") && !f)
-		{
-			if (parse_color(trimmed + 2, &out_cfg->floor_color) != 0)
-			{
-				free(trimmed);
-				free_lines(lines, count);
-				return (1);
-			}
-			f = 1;
-		}
-		else if (starts_with(trimmed, "C ") && !c)
-		{
-			if (parse_color(trimmed + 2, &out_cfg->ceiling_color) != 0)
-			{
-				free(trimmed);
-				free_lines(lines, count);
-				return (1);
-			}
-			c = 1;
-		}
-		else if (ft_strchr(trimmed, '1') || ft_strchr(trimmed, '0') ||
-				ft_strchr(trimmed, 'N') || ft_strchr(trimmed, 'S') ||
-				ft_strchr(trimmed, 'E') || ft_strchr(trimmed, 'W') ||
-				ft_strchr(trimmed, 'D') || ft_strchr(trimmed, '2'))
-		{
-			map_start = i;
 			free(trimmed);
 			break ;
 		}
 		free(trimmed);
-		i++;
+		(*map_start)++;
 	}
-	if (!no || !so || !ea || !we || !f || !c)
+	return (0);
+}
+
+static int	validate_and_parse_map(char **lines, size_t count,
+		t_config *out_cfg, t_parse_flags *flags, size_t map_start)
+{
+	if (validate_required_elements(flags) != 0)
 	{
 		free_lines(lines, count);
-		return (error_msg("parse: missing required elements"));
+		return (1);
 	}
 	if (map_start == 0)
 	{
@@ -376,6 +482,24 @@ int	parse_cub_file(const char *path, t_config *out_cfg)
 		free_lines(lines, count);
 		return (1);
 	}
+	return (0);
+}
+int	parse_cub_file(const char *path, t_config *out_cfg)
+{
+	char			**lines;
+	size_t			count;
+	t_parse_flags	flags;
+	size_t			map_start;
+
+	map_start = 0;
+	flags = init_flags();
+	init_config(out_cfg);
+	if (read_all_lines(path, &lines, &count) != 0)
+		return (1);
+	if (parse_headers(lines, count, out_cfg, &flags, &map_start) != 0)
+		return (1);
+	if (validate_and_parse_map(lines, count, out_cfg, &flags, map_start) != 0)
+		return (1);
 	free_lines(lines, count);
 	return (0);
 }

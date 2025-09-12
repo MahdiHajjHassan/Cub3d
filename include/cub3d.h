@@ -107,6 +107,16 @@ typedef struct s_map
 	int			sprite_count;
 }	t_map;
 
+typedef struct s_parse_flags
+{
+	int	no;
+	int	so;
+	int	ea;
+	int	we;
+	int	f;
+	int	c;
+}	t_parse_flags;
+
 typedef struct s_config
 {
 	t_textures	textures;
