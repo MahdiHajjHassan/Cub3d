@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+         #
+#    By: kali <kali@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/10 15:39:36 by hsharaf-          #+#    #+#              #
-#    Updated: 2025/09/10 16:13:49 by hsharaf-         ###   ########.fr        #
+#    Updated: 2025/09/13 12:32:48 by kali             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,15 @@ MLX := $(MLX_DIR)/libmlx.a
 SRCS := \
 	$(SRC_DIR)/main.c \
 	$(SRC_DIR)/parser/parse.c \
+	$(SRC_DIR)/parser/parse_config.c \
+	$(SRC_DIR)/parser/parse_colors.c \
+	$(SRC_DIR)/parser/parse_sprites.c \
+	$(SRC_DIR)/parser/parse_map.c \
+	$(SRC_DIR)/parser/parse_map_utils.c \
+	$(SRC_DIR)/parser/parse_map_validation.c \
+	$(SRC_DIR)/parser/parse_headers.c \
+	$(SRC_DIR)/parser/parse_textures.c \
+	$(SRC_DIR)/parser/parse_validation.c \
 	$(SRC_DIR)/render/run_game.c \
 	$(SRC_DIR)/render/engine.c \
 	$(SRC_DIR)/render/input.c \
