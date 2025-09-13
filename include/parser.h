@@ -14,6 +14,33 @@
 
 # include "cub3d.h"
 
+/* Helper structs for parameter grouping */
+typedef struct s_parse_context
+{
+	char		**lines;
+	size_t		count;
+	t_config	*cfg;
+	t_parse_flags	*flags;
+	size_t		*map_start;
+}	t_parse_context;
+
+typedef struct s_char_position
+{
+	char	c;
+	size_t	i;
+	size_t	j;
+	int		*player_count;
+}	t_char_position;
+
+typedef struct s_header_context
+{
+	char		*trimmed;
+	char		**lines;
+	size_t		count;
+	t_config	*out_cfg;
+	t_parse_flags	*flags;
+}	t_header_context;
+
 /* Header parsing */
 int		apply_directive(char *line, t_config *cfg, int *header_done);
 int		parse_rgb_triplet(const char *s, t_color *c);
