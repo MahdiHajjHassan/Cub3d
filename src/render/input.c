@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 16:45:36 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/13 14:49:41 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/13 17:55:37 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,27 @@
 #include "render.h"
 #include "mlx.h"
 
-/* These helpers live in separate files to satisfy Norm limits */
 void	handle_door_interaction(t_game *g);
 void	update_doors(t_game *g);
 int		on_mouse_move(int x, int y, void *param);
+
+static void	set_key_state(t_game *g, int keycode, int state)
+{
+	if (keycode == KEY_W)
+		g->keys.w = state;
+	else if (keycode == KEY_A)
+		g->keys.a = state;
+	else if (keycode == KEY_S)
+		g->keys.s = state;
+	else if (keycode == KEY_D)
+		g->keys.d = state;
+	else if (keycode == KEY_LEFT)
+		g->keys.left = state;
+	else if (keycode == KEY_RIGHT)
+		g->keys.right = state;
+	else if (keycode == KEY_SPACE)
+		g->keys.space = state;
+}
 
 int	on_key_press(int keycode, void *param)
 {
@@ -31,22 +48,11 @@ int	on_key_press(int keycode, void *param)
 			mlx_mouse_show(g->mlx, g->win);
 		mlx_loop_end(g->mlx);
 	}
-	else if (keycode == KEY_W)
-		g->keys.w = 1;
-	else if (keycode == KEY_A)
-		g->keys.a = 1;
-	else if (keycode == KEY_S)
-		g->keys.s = 1;
-	else if (keycode == KEY_D)
-		g->keys.d = 1;
-	else if (keycode == KEY_LEFT)
-		g->keys.left = 1;
-	else if (keycode == KEY_RIGHT)
-		g->keys.right = 1;
-	else if (keycode == KEY_SPACE)
+	else
 	{
-		g->keys.space = 1;
-		handle_door_interaction(g);
+		set_key_state(g, keycode, 1);
+		if (keycode == KEY_SPACE)
+			handle_door_interaction(g);
 	}
 	return (0);
 }
@@ -56,20 +62,7 @@ int	on_key_release(int keycode, void *param)
 	t_game	*g;
 
 	g = (t_game *)param;
-	if (keycode == KEY_W)
-		g->keys.w = 0;
-	else if (keycode == KEY_A)
-		g->keys.a = 0;
-	else if (keycode == KEY_S)
-		g->keys.s = 0;
-	else if (keycode == KEY_D)
-		g->keys.d = 0;
-	else if (keycode == KEY_LEFT)
-		g->keys.left = 0;
-	else if (keycode == KEY_RIGHT)
-		g->keys.right = 0;
-	else if (keycode == KEY_SPACE)
-		g->keys.space = 0;
+	set_key_state(g, keycode, 0);
 	return (0);
 }
 

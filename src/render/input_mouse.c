@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 16:45:47 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/10 16:45:51 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/13 17:51:04 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,38 +20,32 @@ static int	iabs_local(int v)
 	return (v);
 }
 
-int	on_mouse_move(int x, int y, void *param)
+static void	reset_mouse_to_center(t_game *g)
 {
-	t_game	*g;
-	int		dx;
+	if (g->mlx && g->win)
+		mlx_mouse_move(g->mlx, g->win, WIN_W / 2, WIN_H / 2);
+	g->mouse.last_x = WIN_W / 2;
+	g->mouse.last_y = WIN_H / 2;
+	g->mouse.x = WIN_W / 2;
+	g->mouse.y = WIN_H / 2;
+	g->mouse.captured = 1;
+}
+
+static void	capture_mouse_position(t_game *g, int x, int y)
+{
+	g->mouse.x = x;
+	g->mouse.y = y;
+	g->mouse.last_x = x;
+	g->mouse.last_y = y;
+	g->mouse.captured = 1;
+}
+
+static void	process_mouse_rotation(t_game *g, int dx)
+{
 	double	rot;
 	double	old_dir_x;
 	double	old_plane_x;
 
-	g = (t_game *)param;
-	if (!g || g->closing || !g->mlx || !g->win)
-		return (0);
-	if (x < 50 || x > WIN_W - 50 || y < 50 || y > WIN_H - 50)
-	{
-		if (g->mlx && g->win)
-			mlx_mouse_move(g->mlx, g->win, WIN_W / 2, WIN_H / 2);
-		g->mouse.last_x = WIN_W / 2;
-		g->mouse.last_y = WIN_H / 2;
-		g->mouse.x = WIN_W / 2;
-		g->mouse.y = WIN_H / 2;
-		g->mouse.captured = 1;
-		return (0);
-	}
-	if (!g->mouse.captured)
-	{
-		g->mouse.x = x;
-		g->mouse.y = y;
-		g->mouse.last_x = x;
-		g->mouse.last_y = y;
-		g->mouse.captured = 1;
-		return (0);
-	}
-	dx = x - g->mouse.last_x;
 	rot = (double)dx * 0.002;
 	if (iabs_local(dx) > 1)
 	{
@@ -62,6 +56,28 @@ int	on_mouse_move(int x, int y, void *param)
 		g->plane_x = g->plane_x * cos(rot) - g->plane_y * sin(rot);
 		g->plane_y = old_plane_x * sin(rot) + g->plane_y * cos(rot);
 	}
+}
+
+int	on_mouse_move(int x, int y, void *param)
+{
+	t_game	*g;
+	int		dx;
+
+	g = (t_game *)param;
+	if (!g || g->closing || !g->mlx || !g->win)
+		return (0);
+	if (x < 50 || x > WIN_W - 50 || y < 50 || y > WIN_H - 50)
+	{
+		reset_mouse_to_center(g);
+		return (0);
+	}
+	if (!g->mouse.captured)
+	{
+		capture_mouse_position(g, x, y);
+		return (0);
+	}
+	dx = x - g->mouse.last_x;
+	process_mouse_rotation(g, dx);
 	g->mouse.last_x = x;
 	g->mouse.last_y = y;
 	g->mouse.x = x;
