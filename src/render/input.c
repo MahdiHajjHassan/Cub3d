@@ -6,11 +6,12 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 16:45:36 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/10 16:45:44 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/13 14:49:41 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+#include "render.h"
 #include "mlx.h"
 
 /* These helpers live in separate files to satisfy Norm limits */

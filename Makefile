@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: kali <kali@student.42.fr>                  +#+  +:+       +#+         #
+#    By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/10 15:39:36 by hsharaf-          #+#    #+#              #
-#    Updated: 2025/09/13 12:32:48 by kali             ###   ########.fr        #
+#    Updated: 2025/09/13 17:41:17 by hsharaf-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,11 @@ SRCS := \
 	$(SRC_DIR)/parser/parse_textures.c \
 	$(SRC_DIR)/parser/parse_validation.c \
 	$(SRC_DIR)/render/run_game.c \
-	$(SRC_DIR)/render/engine.c \
+	$(SRC_DIR)/render/engine/engine.c \
+	$(SRC_DIR)/render/engine/frame.c \
+	$(SRC_DIR)/render/engine/drawing.c \
+	$(SRC_DIR)/render/engine/raycasting.c \
+	$(SRC_DIR)/render/engine/wall.c \
 	$(SRC_DIR)/render/input.c \
 	$(SRC_DIR)/render/movement.c \
 	$(SRC_DIR)/render/input_mouse.c \

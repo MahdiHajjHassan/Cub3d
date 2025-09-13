@@ -6,11 +6,12 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 15:39:07 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/10 16:00:42 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/13 14:49:41 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+#include "render.h"
 #include "mlx.h"
 #include <X11/Xlib.h>
 
@@ -26,8 +27,6 @@ static int	display_available(void)
 	return (1);
 }
 
-int  frame_init(t_game *g);
-void frame_destroy(t_game *g);
 int  textures_load(t_game *g, const t_config *cfg);
 void textures_destroy(t_game *g);
 int  on_key_press(int keycode, void *param);
