@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 19:40:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/13 18:45:43 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/14 23:39:19 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ int	setup_mlx_window(t_game *g)
 		free(g->mlx);
 		return (error_msg("mlx: window failed"));
 	}
+	center_window_on_screen(g->mlx, g->win);
 	return (0);
 }
 

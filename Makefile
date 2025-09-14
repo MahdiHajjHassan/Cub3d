@@ -6,7 +6,7 @@
 #    By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/10 15:39:36 by hsharaf-          #+#    #+#              #
-#    Updated: 2025/09/14 20:24:24 by hsharaf-         ###   ########.fr        #
+#    Updated: 2025/09/14 23:39:19 by hsharaf-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,6 +40,7 @@ SRCS := \
 	$(SRC_DIR)/render/game/game_display.c \
 	$(SRC_DIR)/render/game/game_init.c \
 	$(SRC_DIR)/render/game/game_setup.c \
+	$(SRC_DIR)/render/game/window_center.c \
 	$(SRC_DIR)/render/game/game_cleanup.c \
 	$(SRC_DIR)/render/engine/engine.c \
 	$(SRC_DIR)/render/engine/frame.c \

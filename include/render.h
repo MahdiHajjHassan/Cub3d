@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 00:00:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/13 23:37:48 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/14 23:39:19 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,20 @@
 # define RENDER_H
 
 # include "cub3d.h"
+# include <X11/Xlib.h>
+
+typedef struct s_xvar
+{
+	Display	*display;
+	Window	root;
+	int		screen;
+}	t_xvar;
+
+typedef struct s_win_list
+{
+	Window		window;
+	void		*next;
+}	t_win_list;
 
 typedef struct s_ray_data
 {
@@ -168,6 +182,7 @@ void	init_game_speeds(t_game *g);
 void	init_game_colors(t_game *g, const t_config *cfg);
 void	init_game_structures(t_game *g);
 int		setup_mlx_window(t_game *g);
+void	center_window_on_screen(void *mlx_ptr, void *win_ptr);
 int		setup_game_resources(t_game *g, const t_config *cfg);
 void	cleanup_mlx_window(t_game *g);
 void	cleanup_game_partial(t_game *g);
