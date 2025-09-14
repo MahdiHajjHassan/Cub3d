@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 16:49:44 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/10 16:49:46 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/14 20:14:04 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,16 +192,27 @@ typedef struct s_game
 	double			zbuffer[WIN_W];
 }	t_game;
 
+typedef struct s_file_buffer
+{
+	char	*content;
+	size_t	len;
+	size_t	cap;
+}	t_file_buffer;
+
 int		run_game(const t_config *cfg);
 int		parse_cub_file(const char *path, t_config *out_cfg);
 void	free_config(t_config *cfg);
 int		error_msg(const char *msg);
 int		read_all_lines(const char *path, char ***out_lines, size_t *out_count);
 void	free_lines(char **lines, size_t count);
+int		init_buffer(t_file_buffer *buf, size_t initial_cap);
+int		append_to_buffer(t_file_buffer *buf, char *data, size_t bytes);
+void	free_buffer(t_file_buffer *buf);
+size_t	count_lines(const char *content, size_t len);
+int		split_lines(const char *content, size_t len, char ***lines);
 int		is_space(int c);
 int		is_digit(int c);
-size_t	skip_spaces(const char *s, size_t i);
-size_t	skip_digits(const char *s, size_t i);
+size_t	skip_chars(const char *s, size_t i, int (*check)(int));
 char	*str_trim_spaces(const char *s);
 int		starts_with(const char *s, const char *prefix);
 void	update_sprites(t_game *g);

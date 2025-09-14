@@ -6,11 +6,11 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 18:35:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/10 15:23:45 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/14 19:52:51 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "cub3d.h"
+#include "cub3d.h"
 
 int	main(int argc, char **argv)
 {

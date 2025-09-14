@@ -1,25 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   file_utils_new.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/10 15:39:22 by hsharaf-          #+#    #+#             */
+/*   Created: 2025/09/10 15:39:26 by hsharaf-          #+#    #+#             */
 /*   Updated: 2025/09/14 20:14:04 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-int	error_msg(const char *msg)
+void	free_lines(char **lines, size_t count)
 {
-	if (msg)
+	size_t	i;
+
+	if (!lines)
+		return ;
+	i = 0;
+	while (i < count)
 	{
-		write(2, "Error\n", 6);
-		while (*msg)
-			write(2, msg++, 1);
-		write(2, "\n", 1);
+		free(lines[i]);
+		i++;
 	}
-	return (1);
+	free(lines);
 }

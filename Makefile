@@ -6,7 +6,7 @@
 #    By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/10 15:39:36 by hsharaf-          #+#    #+#              #
-#    Updated: 2025/09/14 19:22:59 by hsharaf-         ###   ########.fr        #
+#    Updated: 2025/09/14 20:14:04 by hsharaf-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -70,6 +70,10 @@ SRCS := \
 	$(SRC_DIR)/render/minimap/minimap_direction.c \
 	$(SRC_DIR)/utils/file_utils.c \
 	$(SRC_DIR)/utils/str_utils.c \
+	$(SRC_DIR)/utils/char_utils.c \
+	$(SRC_DIR)/utils/buffer_utils.c \
+	$(SRC_DIR)/utils/file_reader.c \
+	$(SRC_DIR)/utils/line_parser.c \
 	$(SRC_DIR)/utils/error.c
 
 OBJS := $(SRCS:.c=.o)
