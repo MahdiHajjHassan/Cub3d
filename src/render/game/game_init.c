@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 19:35:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/13 18:45:43 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/14 23:03:36 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ void	init_game_controls(t_game *g)
 
 void	init_game_speeds(t_game *g)
 {
-	g->move_speed = 0.02;
-	g->rot_speed = 0.02;
+	g->move_speed = 3.0;
+	g->rot_speed = 3.0;
 }
 
 void	init_game_colors(t_game *g, const t_config *cfg)

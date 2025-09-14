@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 16:45:36 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/13 17:55:37 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/14 23:03:36 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,8 @@ int	game_loop(void *param)
 	if (!g || g->closing)
 		return (0);
 	g->frame_time = get_time_delta(&g->last_time);
+	if (g->frame_time > 0.1)
+		g->frame_time = 0.016;
 	apply_movement(g);
 	update_doors(g);
 	update_sprites(g);

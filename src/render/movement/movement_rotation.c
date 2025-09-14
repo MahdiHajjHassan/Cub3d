@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 19:10:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/13 18:39:40 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/14 23:03:36 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ static void	rotate_plane_vector(t_game *g, double rot)
 void	handle_rotation_movement(t_game *g)
 {
 	double	rot;
+	double	time_adjusted_rot;
 
 	if (!g->keys.left && !g->keys.right)
 		return ;
@@ -44,6 +45,7 @@ void	handle_rotation_movement(t_game *g)
 	rot = g->rot_speed;
 	if (g->keys.left)
 		rot = -rot;
-	rotate_direction_vector(g, rot);
-	rotate_plane_vector(g, rot);
+	time_adjusted_rot = rot * g->frame_time;
+	rotate_direction_vector(g, time_adjusted_rot);
+	rotate_plane_vector(g, time_adjusted_rot);
 }

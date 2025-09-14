@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 16:45:47 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/13 17:51:04 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/14 23:03:36 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,18 +43,24 @@ static void	capture_mouse_position(t_game *g, int x, int y)
 static void	process_mouse_rotation(t_game *g, int dx)
 {
 	double	rot;
+	double	time_adjusted_rot;
 	double	old_dir_x;
 	double	old_plane_x;
 
 	rot = (double)dx * 0.002;
 	if (iabs_local(dx) > 1)
 	{
+		time_adjusted_rot = rot * g->frame_time * 60.0;
 		old_dir_x = g->dir_x;
-		g->dir_x = g->dir_x * cos(rot) - g->dir_y * sin(rot);
-		g->dir_y = old_dir_x * sin(rot) + g->dir_y * cos(rot);
+		g->dir_x = g->dir_x * cos(time_adjusted_rot)
+			- g->dir_y * sin(time_adjusted_rot);
+		g->dir_y = old_dir_x * sin(time_adjusted_rot)
+			+ g->dir_y * cos(time_adjusted_rot);
 		old_plane_x = g->plane_x;
-		g->plane_x = g->plane_x * cos(rot) - g->plane_y * sin(rot);
-		g->plane_y = old_plane_x * sin(rot) + g->plane_y * cos(rot);
+		g->plane_x = g->plane_x * cos(time_adjusted_rot)
+			- g->plane_y * sin(time_adjusted_rot);
+		g->plane_y = old_plane_x * sin(time_adjusted_rot)
+			+ g->plane_y * cos(time_adjusted_rot);
 	}
 }
 
