@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 16:49:44 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/14 22:54:31 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/15 00:54:45 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 # include <sys/time.h>
 # include "libft/libft.h"
 
-# define WIN_W 1280
-# define WIN_H 800
+# define WIN_W 1920
+# define WIN_H 1080
 
 # define KEY_ESC 65307
 # define KEY_LEFT 65361

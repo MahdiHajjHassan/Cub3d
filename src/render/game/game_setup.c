@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 19:40:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/14 23:39:19 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/15 00:30:27 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	setup_mlx_window(t_game *g)
 	g->mlx = mlx_init();
 	if (!g->mlx)
 		return (error_msg("mlx: init failed"));
-	g->win = mlx_new_window(g->mlx, WIN_W, WIN_H, "cub3d");
+	g->win = mlx_new_window(g->mlx, WIN_W, WIN_H, "CYBERFORTRESS");
 	if (!g->win)
 	{
 		mlx_destroy_display(g->mlx);
