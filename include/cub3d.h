@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 16:49:44 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/14 20:41:15 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/14 22:54:31 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,6 @@ size_t	count_lines(const char *content, size_t len);
 int		split_lines(const char *content, size_t len, char ***lines);
 int		is_space(int c);
 int		is_digit(int c);
-size_t	skip_chars(const char *s, size_t i, int (*check)(int));
 char	*str_trim_spaces(const char *s);
 int		starts_with(const char *s, const char *prefix);
 void	update_sprites(t_game *g);
