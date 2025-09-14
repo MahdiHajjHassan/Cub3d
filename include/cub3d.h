@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 16:49:44 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/14 20:14:04 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/14 20:41:15 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ typedef struct s_minimap
 	int		size;
 	int		margin;
 	int		scale;
-	int		offset_x; /* origin inside the minimap image to center-fit the map */
+	int		offset_x;
 	int		offset_y;
 	t_img	img;
 }	t_minimap;
