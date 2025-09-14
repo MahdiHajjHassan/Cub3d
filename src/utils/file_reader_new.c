@@ -6,39 +6,47 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 00:00:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/14 20:14:04 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/14 20:17:19 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static int	read_file_to_buffer(const char *path, t_file_buffer *buf)
+static int	read_loop(int fd, t_file_buffer *buf)
 {
-	int		fd;
 	char	temp[4096];
 	ssize_t	bytes;
 
-	fd = open(path, O_RDONLY);
-	if (fd < 0)
-		return (error_msg("cannot open file"));
-	if (init_buffer(buf, 8192))
-		return (close(fd), error_msg("malloc failed"));
 	bytes = read(fd, temp, sizeof(temp));
 	while (bytes > 0)
 	{
 		if (append_to_buffer(buf, temp, bytes))
 		{
 			free_buffer(buf);
-			return (close(fd), error_msg("malloc failed"));
+			return (1);
 		}
 		bytes = read(fd, temp, sizeof(temp));
 	}
-	close(fd);
 	if (bytes < 0)
 	{
 		free_buffer(buf);
-		return (error_msg("read failed"));
+		return (1);
 	}
+	return (0);
+}
+
+static int	read_file_to_buffer(const char *path, t_file_buffer *buf)
+{
+	int	fd;
+
+	fd = open(path, O_RDONLY);
+	if (fd < 0)
+		return (error_msg("cannot open file"));
+	if (init_buffer(buf, 8192))
+		return (close(fd), error_msg("malloc failed"));
+	if (read_loop(fd, buf))
+		return (close(fd), error_msg("read/malloc failed"));
+	close(fd);
 	return (0);
 }
 

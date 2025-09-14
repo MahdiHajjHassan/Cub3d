@@ -6,13 +6,14 @@
 #    By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/10 15:39:36 by hsharaf-          #+#    #+#              #
-#    Updated: 2025/09/14 20:14:04 by hsharaf-         ###   ########.fr        #
+#    Updated: 2025/09/14 20:24:24 by hsharaf-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME := cub3d
 
 SRC_DIR := src
+OBJS_DIR := objs
 INC_DIR := include
 LIBFT_DIR := $(INC_DIR)/libft
 MLX_DIR := minilibx-linux
@@ -76,7 +77,7 @@ SRCS := \
 	$(SRC_DIR)/utils/line_parser.c \
 	$(SRC_DIR)/utils/error.c
 
-OBJS := $(SRCS:.c=.o)
+OBJS := $(SRCS:$(SRC_DIR)/%.c=$(OBJS_DIR)/%.o)
 
 CC := cc
 CFLAGS := -Wall -Wextra -Werror -I$(INC_DIR) -I$(LIBFT_DIR) -I$(MLX_DIR)
@@ -97,7 +98,8 @@ $(NAME): $(LIBFT) $(MLX) $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) $(LDLIBS) -o $(NAME) > /dev/null 2>&1 || (printf '$(RED)Compilation failed — remove quiet to see errors$(RST)\n' && false)
 	@printf '$(GREEN)%s compiled successfully$(RST)\n' $(NAME)
 
-%.o: %.c
+$(OBJS_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) -c $< -o $@ > /dev/null 2>&1
 
 libft: $(LIBFT)
@@ -109,7 +111,7 @@ $(MLX):
 	@$(MAKE) -C $(MLX_DIR) > /dev/null 2>&1
 
 clean:
-	@$(RM) $(OBJS)
+	@$(RM) -rf $(OBJS_DIR)
 	@$(MAKE) -C $(LIBFT_DIR) clean > /dev/null 2>&1
 	@$(MAKE) -C $(MLX_DIR) clean > /dev/null 2>&1
 	@printf '$(RED)clean done$(RST)\n'
