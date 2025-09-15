@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 16:45:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/15 14:17:27 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/15 14:55:06 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,20 +56,14 @@ static int	load_all_wall_textures(t_game *g, const t_config *cfg)
 
 static int	load_wall_texture(t_game *g, const char *path, int index)
 {
-	const char	*fallback_paths[5] = {
-		"assets/wall-enhanced_1.xpm",
-		"assets/wall-enhanced_1.xpm",
-		"assets/wall-enhanced_1.xpm",
-		"assets/wall-enhanced_1.xpm",
-		"assets/door-enhanced_1.xpm"
-	};
+	const char	*fallback_paths[5] = {"assets/wall-enhanced_1.xpm",
+		"assets/wall-enhanced_1.xpm", "assets/wall-enhanced_1.xpm",
+		"assets/wall-enhanced_1.xpm", "assets/door-enhanced_1.xpm"};
 
 	if (index >= TEX_COUNT)
 		return (error_msg("textures: invalid texture index"));
-	// Force all wall faces to use wall-enhanced_1.xpm
 	if (index >= TEX_NO && index <= TEX_WE)
 		path = "assets/wall-enhanced_1.xpm";
-	// Force door texture to use door-enhanced_1.xpm
 	else if (index == TEX_DOOR)
 		path = "assets/door-enhanced_1.xpm";
 	else if (!path || !*path)
@@ -81,10 +75,7 @@ static int	load_wall_texture(t_game *g, const char *path, int index)
 	g->tex[index].data = mlx_get_data_addr(g->tex[index].img,
 			&g->tex[index].bpp, &g->tex[index].line_len, &g->tex[index].endian);
 	if (!g->tex[index].data)
-	{
-		mlx_destroy_image(g->mlx, g->tex[index].img);
-		return (1);
-	}
+		return (mlx_destroy_image(g->mlx, g->tex[index].img), 1);
 	return (0);
 }
 
@@ -94,8 +85,8 @@ static int	load_sprite_textures(t_game *g)
 		"assets/sprite2-back_1.xpm"};
 	int			i;
 
-	i = 0;
-	while (i < 2)
+	i = -1;
+	while (++i < 2)
 	{
 		g->tex[SPRITE_TEX_START + i].img = mlx_xpm_file_to_image(g->mlx,
 				(char *)paths[i], &g->tex[SPRITE_TEX_START + i].width,
@@ -108,11 +99,8 @@ static int	load_sprite_textures(t_game *g)
 				&g->tex[SPRITE_TEX_START + i].line_len,
 				&g->tex[SPRITE_TEX_START + i].endian);
 		if (!g->tex[SPRITE_TEX_START + i].data)
-		{
-			mlx_destroy_image(g->mlx, g->tex[SPRITE_TEX_START + i].img);
-			return (error_msg("textures: sprite data addr failed"));
-		}
-		i++;
+			return (mlx_destroy_image(g->mlx, g->tex[SPRITE_TEX_START + i].img),
+				error_msg("textures: sprite data addr failed"));
 	}
 	return (0);
 }
