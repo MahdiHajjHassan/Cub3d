@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 16:45:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/14 19:50:21 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/15 14:17:27 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,16 +57,22 @@ static int	load_all_wall_textures(t_game *g, const t_config *cfg)
 static int	load_wall_texture(t_game *g, const char *path, int index)
 {
 	const char	*fallback_paths[5] = {
-		"assets/cyber_wall_north_fallback.xpm",
-		"assets/cyber_wall_south_fallback.xpm",
-		"assets/cyber_wall_east_fallback.xpm",
-		"assets/cyber_wall_west_fallback.xpm",
-		"assets/cyber_door_fallback.xpm"
+		"assets/wall-enhanced_1.xpm",
+		"assets/wall-enhanced_1.xpm",
+		"assets/wall-enhanced_1.xpm",
+		"assets/wall-enhanced_1.xpm",
+		"assets/door-enhanced_1.xpm"
 	};
 
 	if (index >= TEX_COUNT)
 		return (error_msg("textures: invalid texture index"));
-	if (!path || !*path)
+	// Force all wall faces to use wall-enhanced_1.xpm
+	if (index >= TEX_NO && index <= TEX_WE)
+		path = "assets/wall-enhanced_1.xpm";
+	// Force door texture to use door-enhanced_1.xpm
+	else if (index == TEX_DOOR)
+		path = "assets/door-enhanced_1.xpm";
+	else if (!path || !*path)
 		path = fallback_paths[index];
 	g->tex[index].img = mlx_xpm_file_to_image(g->mlx, (char *)path,
 			&g->tex[index].width, &g->tex[index].height);
@@ -84,8 +90,8 @@ static int	load_wall_texture(t_game *g, const char *path, int index)
 
 static int	load_sprite_textures(t_game *g)
 {
-	const char	*paths[2] = {"assets/sprite_padlock_closed.xpm",
-		"assets/sprite_padlock_open.xpm"};
+	const char	*paths[2] = {"assets/sprite1-back_1.xpm",
+		"assets/sprite2-back_1.xpm"};
 	int			i;
 
 	i = 0;
