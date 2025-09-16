@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 12:15:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/13 13:25:41 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:00:01 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,7 @@ int	parse_single_line(t_parse_context *ctx)
 
 	trimmed = str_trim_spaces(ctx->lines[*(ctx->map_start)]);
 	if (!trimmed)
-	{
-		free_lines(ctx->lines, ctx->count);
 		return (error_msg("parse: memory error"));
-	}
 	if (handle_empty_line(trimmed, ctx->map_start))
 		return (0);
 	result = process_single_header(ctx, trimmed);

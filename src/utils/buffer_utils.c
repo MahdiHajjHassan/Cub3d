@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 00:00:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/14 20:14:04 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:00:01 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,10 @@ int	init_buffer(t_file_buffer *buf, size_t initial_cap)
 
 int	append_to_buffer(t_file_buffer *buf, char *data, size_t bytes)
 {
-	while (buf->len + bytes >= buf->cap)
-		buf->cap *= 2;
 	if (buf->len + bytes >= buf->cap)
 	{
+		while (buf->len + bytes >= buf->cap)
+			buf->cap *= 2;
 		buf->content = grow_buffer(buf->content, buf->len, buf->cap);
 		if (!buf->content)
 			return (1);

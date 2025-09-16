@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 12:30:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/13 13:25:38 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:00:01 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ int	process_header_line(t_header_context *ctx)
 	if (result == 1)
 	{
 		free(ctx->trimmed);
-		free_lines(ctx->lines, ctx->count);
 		return (1);
 	}
 	if (result == 2)

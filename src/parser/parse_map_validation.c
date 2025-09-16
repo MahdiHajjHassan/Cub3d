@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 12:30:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/13 13:25:06 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:00:01 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,19 +50,10 @@ int	is_valid_map_position(char **map_lines, size_t height, size_t row,
 int	validate_and_parse_map(t_parse_context *ctx, size_t map_start)
 {
 	if (validate_required_elements(ctx->flags) != 0)
-	{
-		free_lines(ctx->lines, ctx->count);
 		return (1);
-	}
 	if (map_start == 0)
-	{
-		free_lines(ctx->lines, ctx->count);
 		return (error_msg("parse: no map found"));
-	}
 	if (parse_map(ctx->lines, ctx->count, map_start, ctx->cfg) != 0)
-	{
-		free_lines(ctx->lines, ctx->count);
 		return (1);
-	}
 	return (0);
 }

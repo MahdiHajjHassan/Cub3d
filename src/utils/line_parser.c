@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 00:00:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/14 20:14:04 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:00:01 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ size_t	count_lines(const char *content, size_t len)
 	size_t	count;
 	size_t	i;
 
+	if (len == 0)
+		return (0);
 	count = 0;
 	i = 0;
 	while (i < len)
@@ -49,6 +51,8 @@ size_t	count_lines(const char *content, size_t len)
 			count++;
 		i++;
 	}
+	if (len > 0 && content[len - 1] != '\n')
+		count++;
 	return (count);
 }
 

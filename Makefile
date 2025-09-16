@@ -6,11 +6,11 @@
 #    By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/10 15:39:36 by hsharaf-          #+#    #+#              #
-#    Updated: 2025/09/15 00:54:45 by hsharaf-         ###   ########.fr        #
+#    Updated: 2025/09/16 14:35:55 by hsharaf-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME := cub3d
+NAME := cub3D
 
 SRC_DIR := src
 OBJS_DIR := objs
@@ -32,6 +32,7 @@ SRCS := \
 	$(SRC_DIR)/parser/parse_sprites.c \
 	$(SRC_DIR)/parser/parse_map.c \
 	$(SRC_DIR)/parser/parse_map_utils.c \
+	$(SRC_DIR)/parser/parse_map_grid.c \
 	$(SRC_DIR)/parser/parse_map_validation.c \
 	$(SRC_DIR)/parser/parse_headers.c \
 	$(SRC_DIR)/parser/parse_textures.c \

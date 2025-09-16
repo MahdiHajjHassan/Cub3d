@@ -93,6 +93,10 @@ int				handle_color_header(const char *trimmed, t_config *out_cfg,
 					t_parse_flags *flags);
 int				is_map_start(const char *trimmed);
 
+/* Grid allocation functions */
+int				allocate_map_row(t_config *cfg, char **lines, size_t line_idx,
+					size_t row_idx);
+
 /* Validation functions */
 int				validate_map_characters(char **map_lines, size_t height);
 int				is_valid_map_position(char **map_lines, size_t height,
