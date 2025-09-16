@@ -84,6 +84,7 @@ int				process_single_header(t_parse_context *ctx, char *trimmed);
 int				parse_single_line(t_parse_context *ctx);
 
 /* Texture functions */
+int				validate_texture_file(const char *path);
 int				handle_wall_textures(const char *trimmed, t_config *out_cfg,
 					t_parse_flags *flags);
 int				handle_door_texture(const char *trimmed, t_config *out_cfg);

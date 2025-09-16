@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 12:15:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/13 13:25:23 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:53:20 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,24 @@ t_parse_flags	init_flags(void)
 	flags.f = 0;
 	flags.c = 0;
 	return (flags);
+}
+
+int	handle_color_header(const char *trimmed, t_config *out_cfg,
+		t_parse_flags *flags)
+{
+	if (starts_with(trimmed, "F ") && !flags->f)
+	{
+		if (parse_color(trimmed + 2, &out_cfg->floor_color) != 0)
+			return (-1);
+		flags->f = 1;
+		return (1);
+	}
+	else if (starts_with(trimmed, "C ") && !flags->c)
+	{
+		if (parse_color(trimmed + 2, &out_cfg->ceiling_color) != 0)
+			return (-1);
+		flags->c = 1;
+		return (1);
+	}
+	return (0);
 }

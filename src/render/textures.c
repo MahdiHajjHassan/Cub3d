@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 16:45:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/15 14:55:06 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:37:13 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,7 @@ static int	load_wall_texture(t_game *g, const char *path, int index)
 
 	if (index >= TEX_COUNT)
 		return (error_msg("textures: invalid texture index"));
-	if (index >= TEX_NO && index <= TEX_WE)
-		path = "assets/wall-enhanced_1.xpm";
-	else if (index == TEX_DOOR)
-		path = "assets/door-enhanced_1.xpm";
-	else if (!path || !*path)
+	if (!path || !*path)
 		path = fallback_paths[index];
 	g->tex[index].img = mlx_xpm_file_to_image(g->mlx, (char *)path,
 			&g->tex[index].width, &g->tex[index].height);

@@ -6,7 +6,7 @@
 #    By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/10 15:39:36 by hsharaf-          #+#    #+#              #
-#    Updated: 2025/09/16 14:35:55 by hsharaf-         ###   ########.fr        #
+#    Updated: 2025/09/16 15:53:20 by hsharaf-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,6 +36,7 @@ SRCS := \
 	$(SRC_DIR)/parser/parse_map_validation.c \
 	$(SRC_DIR)/parser/parse_headers.c \
 	$(SRC_DIR)/parser/parse_textures.c \
+	$(SRC_DIR)/parser/parse_texture_utils.c \
 	$(SRC_DIR)/parser/parse_validation.c \
 	$(SRC_DIR)/render/game/run_game.c \
 	$(SRC_DIR)/render/game/game_display.c \

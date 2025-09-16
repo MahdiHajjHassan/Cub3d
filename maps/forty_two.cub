@@ -1,8 +1,8 @@
-NO assets/wall_north.xpm
-SO assets/wall_south.xpm
-WE assets/wall_west.xpm
-EA assets/wall_east.xpm
-DO assets/cyber_door.xpm
+NO assets/wall-enhanced_1.xpm
+SO assets/wall-enhanced_1.xpm
+WE assets/wall-enhanced_1.xpm
+EA assets/wall-enhanced_1.xpm
+DO assets/door-enhanced_1.xpm
 F 18,18,22
 C 8,28,42
 
