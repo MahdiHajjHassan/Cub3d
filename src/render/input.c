@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 16:45:36 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/14 23:03:36 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/17 14:48:07 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,15 @@ int	on_destroy(void *param)
 
 int	game_loop(void *param)
 {
-	t_game	*g;
+	t_game			*g;
+	static double	min_frame_time = 0.01666667;
 
 	g = (t_game *)param;
 	if (!g || g->closing)
 		return (0);
 	g->frame_time = get_time_delta(&g->last_time);
+	if (g->frame_time < min_frame_time)
+		return (0);
 	if (g->frame_time > 0.1)
 		g->frame_time = 0.016;
 	apply_movement(g);

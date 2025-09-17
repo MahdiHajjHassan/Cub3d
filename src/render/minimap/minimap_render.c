@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 18:40:00 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/13 18:18:48 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/17 14:41:24 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,14 @@
 
 void	clear_minimap_background(t_game *g)
 {
-	int	x;
-	int	y;
+	int		total_bytes;
+	char	*data_ptr;
 
-	x = 0;
-	while (x < g->minimap.size)
-	{
-		y = 0;
-		while (y < g->minimap.size)
-		{
-			draw_minimap_pixel(&g->minimap.img, (t_pixel_data){x, y, 0x000000});
-			y++;
-		}
-		x++;
-	}
+	if (!g || !g->minimap.img.data)
+		return ;
+	total_bytes = g->minimap.img.line_len * g->minimap.size;
+	data_ptr = g->minimap.img.data;
+	ft_memset(data_ptr, 0, total_bytes);
 }
 
 static int	get_cell_color(char cell, bool is_door_open)

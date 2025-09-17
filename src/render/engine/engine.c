@@ -6,7 +6,7 @@
 /*   By: hsharaf- <hsharaf-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 16:46:10 by hsharaf-          #+#    #+#             */
-/*   Updated: 2025/09/13 17:38:40 by hsharaf-         ###   ########.fr       */
+/*   Updated: 2025/09/17 14:41:24 by hsharaf-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	render_frame(t_game *g)
 		x++;
 	}
 	render_sprites(g);
+	render_minimap(g);
 	if (!g->closing && g->mlx && g->win)
 		mlx_put_image_to_window(g->mlx, g->win, g->frame.img, 0, 0);
-	render_minimap(g);
 }
